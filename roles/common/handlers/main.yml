@@ -1,0 +1,7 @@
+---
+- name: mysql_restart
+  become: true
+  system:
+    name: mysql
+    state: restarted
+    enabled: yes

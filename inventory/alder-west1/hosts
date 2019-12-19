@@ -1,0 +1,12 @@
+
+
+[master]
+tdh-m01
+
+[slave]
+tdh-m02
+
+
+[mysql:children]
+master
+slave

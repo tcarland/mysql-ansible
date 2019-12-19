@@ -1,0 +1,44 @@
+---
+- name: Remove unwanted packages
+  yum:
+    name: '{{ yum_remove_packages }}'
+    state: absent
+  become: true
+
+- name: Install Mysql Community Repo
+  yum:
+    name: https://repo.mysql.com/mysql57-community-release-el7.rpm
+    state: present
+  become: true
+
+- name: Install Packages
+  yum:
+    name: '{{ yum_install_packages }}'
+    state: present
+  become: true
+
+- name: Install Client Packages
+  yum:
+    name: '{{ yum_install_client_packages }}'
+    state: present
+  become: true
+
+- name: Set Master Config
+  hosts: master
+  become: true
+  template:
+    src: mysql.cnf
+    dest: /etc/my.cnf
+  vars:
+    mysql_server_id: 1
+  notify: mysql_restart
+
+- name: Set Slave Config
+  hosts: slave
+  become: true
+  template:
+    src: mysql.cnf
+    dest: /etc/my.cnf
+  vars:
+    mysql_server_id: 2
+  notify: mysql_restart
