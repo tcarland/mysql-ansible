@@ -1,0 +1,10 @@
+---
+- name: Install MySQLd
+  hosts: all
+  gather_facts: false
+
+- name: Install and Configure MySQL
+  hosts: all
+  gather_facts: false
+  roles:
+    - 'mysql'
