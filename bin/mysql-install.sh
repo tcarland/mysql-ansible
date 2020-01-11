@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
 #
-
+#
 action=
 env=
-dryrun=1
 
 
 usage()
@@ -19,7 +18,7 @@ usage()
 # MAIN
 #
 rt=0
-
+dryrun=1
 
 while [ $# -gt 0 ]; do
     case "$1" in
@@ -39,8 +38,6 @@ while [ $# -gt 0 ]; do
     esac
     shift
 done
-
-
 
 if [ -z "$action" ] || [ -z "$env" ]; then
     usage

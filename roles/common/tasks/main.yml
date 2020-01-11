@@ -24,21 +24,26 @@
   become: true
 
 - name: Set Master Config
-  hosts: master
-  become: true
   template:
     src: mysql.cnf
     dest: /etc/my.cnf
   vars:
     mysql_server_id: 1
+  become: true
   notify: mysql_restart
+  when: inventory_hostname in groups['master']
 
 - name: Set Slave Config
-  hosts: slave
-  become: true
   template:
     src: mysql.cnf
     dest: /etc/my.cnf
   vars:
     mysql_server_id: 2
+  become: true
   notify: mysql_restart
+  when: inventory_hostname in groups['slave']
+
+- name: Set ~/my.cnf
+  template:
+    src: mypw.cnf
+    dest: .my.cnf

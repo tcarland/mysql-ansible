@@ -1,7 +1,7 @@
 ---
 - name: mysql_restart
   become: true
-  system:
-    name: mysql
+  systemd:
+    name: mysqld
     state: restarted
     enabled: yes

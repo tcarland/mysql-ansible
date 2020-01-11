@@ -1,10 +1,10 @@
 
 
 [master]
-tdh-m01
+tdh-nic01
 
 [slave]
-tdh-m02
+tdh-nic02
 
 
 [mysql:children]
