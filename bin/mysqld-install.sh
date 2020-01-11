@@ -18,7 +18,10 @@ usage()
 }
 
 version()
-    echo "mysql-ansible v${MYSQL_ANSIBLE_VERSION}"
+{
+    echo ""
+    echo "$PNAME (mysql-ansible) v$MYSQL_ANSIBLE_VERSION"
+    echo ""
 }
 
 
