@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 #
 #
+PNAME=${0##*\/}
+MYSQL_ANSIBLE_VERSION="0.3.0"
+playbook="mysqld-install.yml"
 action=
 env=
 
@@ -15,7 +18,7 @@ usage()
 }
 
 version()
-    echo "mysql-ansible v0.3.0"
+    echo "mysql-ansible v${MYSQL_ANSIBLE_VERSION}"
 }
 
 
@@ -52,12 +55,12 @@ if [[ $action == "run" ]]; then
     dryrun=0
 fi
 
-echo "Running Ansible Playbook:  mysql-install.yml"
+echo "Running Ansible Playbook: '$playbook'"
 echo ""
-echo "( ansible-playbook -i inventory/$env/hosts mysql-install.yml )"
+echo "( ansible-playbook -i inventory/$env/hosts $playbook )"
 
 if [ $dryrun -eq 0 ]; then
-    ( ansible-playbook -i inventory/$env/hosts mysqld-install.yml )
+    ( ansible-playbook -i inventory/$env/hosts $playbook )
     rt=$?
 fi
 
