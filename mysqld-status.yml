@@ -6,7 +6,7 @@
     mysql_replication:
       login_user: 'root'
       login_password: '{{ mysql_root_password }}'
-      login_host: inventory_hostname['master']
+      login_host: '{{ mysql_master_hostname }}'
       login_port: '{{ mysql_port }}'
       mode: getmaster
     register: master_status

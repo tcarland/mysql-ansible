@@ -1,4 +1,12 @@
 ---
+- name: Existing mysql datadir
+  become: true
+  stat:
+    path: '{{ mysql_data_dir }}/mysql'
+  register: mystat
+- name: mysql datadir stat
+  debug: 'var=mystat'
+  
 - name: Remove unwanted packages
   yum:
     name: '{{ yum_remove_packages }}'
@@ -30,7 +38,6 @@
   vars:
     mysql_server_id: 1
   become: true
-  notify: mysql_restart
   when: inventory_hostname in groups['master']
 
 - name: Set Slave Config
@@ -40,10 +47,35 @@
   vars:
     mysql_server_id: 2
   become: true
-  notify: mysql_restart
   when: inventory_hostname in groups['slave']
+
+- name: Initialize and Start Mysqld
+  block:
+  - name: Initialize mysql
+    become: true
+    shell: 'mysqld --initialize-insecure --user=mysql'
+  - name: Start mysqld
+    become: true
+    shell: 'service mysqld start'
+    notify: mysqld_enable
+  - name: Set root password
+    become: true
+    shell: "mysql -u root --skip-password -e \"ALTER USER root@localhost IDENTIFIED BY '{{ mysql_root_password }}'\""
+  tags: [ init ]
+  when: mystat.stat.exists == false
 
 - name: Set ~/my.cnf
   template:
     src: mypw.cnf
     dest: .my.cnf
+
+- name: Mysql Root accounts
+  mysql_user:
+    login_user: 'root'
+    login_password: '{{ mysql_root_password }}'
+    name: 'root'
+    password: '{{ mysql_root_password }}'
+    host: '{{ item }}'
+    priv: '*.*:ALL,GRANT'
+    state: present
+  with_items: '{{ mysql_master_hosts }}'

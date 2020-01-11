@@ -1,3 +1,12 @@
 ---
 mysql_port: '3306'
 mysql_repl_user: 'tdhrepl'
+
+mysql_master_hostname: 'tdh-nic01.c.alderberry-22.internal'
+mysql_slave_hostname: 'tdh-nic02.c.alderberry-22.internal'
+
+mysql_master_hosts:
+  - '{{ mysql_master_hostname }}'
+  - '{{ mysql_slave_hostname }}'
+
+mysql_data_dir: '/var/lib/mysql'

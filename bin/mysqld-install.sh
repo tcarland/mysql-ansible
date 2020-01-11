@@ -14,6 +14,10 @@ usage()
     echo ""
 }
 
+version()
+    echo "mysql-ansible v0.3.0"
+}
+
 
 # MAIN
 #
@@ -27,8 +31,8 @@ while [ $# -gt 0 ]; do
             shift
             ;;
         -V|--version)
-            tdh_version
-            exit 1
+            version
+            exit 0
             ;;
         *)
             action="$1"
@@ -53,7 +57,7 @@ echo ""
 echo "( ansible-playbook -i inventory/$env/hosts mysql-install.yml )"
 
 if [ $dryrun -eq 0 ]; then
-    ( ansible-playbook -i inventory/$env/hosts mysql-install.yml )
+    ( ansible-playbook -i inventory/$env/hosts mysqld-install.yml )
     rt=$?
 fi
 

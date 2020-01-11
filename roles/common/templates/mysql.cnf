@@ -29,8 +29,8 @@ symbolic-links = 0
 
 #log_bin=/var/lib/mysql/mysql_binary_log
 
-datadir=/var/lib/mysql
-socket=/var/lib/mysql/mysql.sock
+datadir={{ mysql_data_dir }}
+socket={{ mysql_data_dir }}/mysql.sock
 
 # InnoDB settings
 innodb_file_format                  = Barracuda
