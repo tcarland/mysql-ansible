@@ -2,7 +2,8 @@
 #
 #
 PNAME=${0##*\/}
-MYSQL_ANSIBLE_VERSION="0.3.0"
+
+MYSQL_ANSIBLE_VERSION="0.3.1"
 playbook="mysqld-install.yml"
 action=
 env=
@@ -12,8 +13,8 @@ usage()
 {
     echo ""
     echo "Usage: $PNAME <action> <env>"
-    echo "  <action> any action other than 'run' is a 'dryrun'"
-    echo "  <env>    is the ansible inventory name."
+    echo "  <action> : any action other than 'run' is a 'dryrun'"
+    echo "  <env>    : is the ansible inventory name."
     echo ""
 }
 
@@ -32,6 +33,10 @@ dryrun=1
 
 while [ $# -gt 0 ]; do
     case "$1" in
+        -h|--help)
+            usage
+            exit 0
+            ;;
         -T|--tags)
             tags="$2"
             shift
@@ -41,7 +46,7 @@ while [ $# -gt 0 ]; do
             exit 0
             ;;
         *)
-            action="$1"
+            action="${1,,}"
             env="$2"
             shift $#
             ;;
@@ -50,6 +55,7 @@ while [ $# -gt 0 ]; do
 done
 
 if [ -z "$action" ] || [ -z "$env" ]; then
+    echo "Error: Missing arguments..."
     usage
     exit 1
 fi

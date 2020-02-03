@@ -2,8 +2,9 @@
 #
 env="$1"
 
-
 if [ -z "$env" ]; then
+    echo "Displays MySQL Master and Slave Status."
+    echo ""
     echo "Usage: $0 <env>"
     echo " where 'env' is the ansible inventory name"
     exit 0

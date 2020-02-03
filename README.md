@@ -21,14 +21,16 @@ master
 slave
 ```
 
-Vars defined per environment are provided in the inventory file
+Variables defined per environment are provided in the inventory file
 `inventory/$env/group_vars/all/vars`. Note that the two hostname
-variables should be defined as the Fully-Qualified Domain Name (fqdn).
+variables should be defined as the Fully-Qualified Domain Name (fqdn)
+ou you will likely have trouble with MySQL permissions (Grant statements).
 ```
 ---
 mysql_port: '3306'
 mysql_repl_user: 'repluser'
 
+# use fully qualified domain names
 mysql_master_hostname: 'hostname01.project.internal'
 mysql_slave_hostname: 'hostname02.project.internal`
 
@@ -39,7 +41,7 @@ mysql_master_hosts:
 mysql_data_dir: '/var/lib/mysql'
 ```
 
-And finally, passwords are provided by the vault file
+MySQL passwords are provided by the vault file
 `inventory/$env/group_vars/all/vault` with passwords defined for the root
 and replication accounts.
 ```
