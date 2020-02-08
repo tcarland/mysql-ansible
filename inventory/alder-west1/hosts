@@ -10,3 +10,6 @@ tdh-nic02
 [mysql:children]
 master
 slave
+
+[clients]
+tdh-d[01-04]

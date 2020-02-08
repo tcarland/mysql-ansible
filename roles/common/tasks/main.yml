@@ -4,32 +4,39 @@
   stat:
     path: '{{ mysql_data_dir }}/mysql'
   register: mystat
+  tags: [ server ]
+
 - name: mysql datadir stat
   debug: 'var=mystat'
-  
+  tags: [ server ]
+
 - name: Remove unwanted packages
   yum:
     name: '{{ yum_remove_packages }}'
     state: absent
   become: true
+  tags: [ server, client ]
 
 - name: Install Mysql Community Repo
   yum:
     name: https://repo.mysql.com/mysql57-community-release-el7.rpm
     state: present
   become: true
+  tags: [ server, client ]
 
 - name: Install Packages
   yum:
     name: '{{ yum_install_packages }}'
     state: present
   become: true
+  tags: [ server ]
 
 - name: Install Client Packages
   yum:
     name: '{{ yum_install_client_packages }}'
     state: present
   become: true
+  tags: [ client ]
 
 - name: Set Master Config
   template:
@@ -39,6 +46,7 @@
     mysql_server_id: 1
   become: true
   when: inventory_hostname in groups['master']
+  tags: [ server ]
 
 - name: Set Slave Config
   template:
@@ -48,6 +56,7 @@
     mysql_server_id: 2
   become: true
   when: inventory_hostname in groups['slave']
+  tags: [ server ]
 
 - name: Initialize and Start Mysqld
   block:
@@ -61,13 +70,14 @@
   - name: Set root password
     become: true
     shell: "mysql -u root --skip-password -e \"ALTER USER root@localhost IDENTIFIED BY '{{ mysql_root_password }}'\""
-  tags: [ init ]
+  tags: [ init, server ]
   when: mystat.stat.exists == false
 
 - name: Set ~/my.cnf
   template:
     src: mypw.cnf
     dest: .my.cnf
+  tags: [ server ]
 
 - name: Mysql Root accounts
   mysql_user:
@@ -79,3 +89,4 @@
     priv: '*.*:ALL,GRANT'
     state: present
   with_items: '{{ mysql_master_hosts }}'
+  tags: [ server ]

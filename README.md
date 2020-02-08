@@ -19,6 +19,12 @@ hostname02
 [mysql:children]
 master
 slave
+
+[clients]
+hostname01
+hostname02
+client01
+client02
 ```
 
 Variables defined per environment are provided in the inventory file
@@ -49,4 +55,3 @@ and replication accounts.
 mysql_root_password: 'myrootpw'
 mysql_repl_password: 'myreplpw'
 ```
- 

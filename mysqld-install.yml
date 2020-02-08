@@ -8,3 +8,9 @@
   gather_facts: false
   roles:
     - 'mysql'
+
+- name: Configure clients
+  hosts: all
+  gather_facts: false
+  roles:
+     - 'mysql_client'

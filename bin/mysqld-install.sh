@@ -3,7 +3,7 @@
 #
 PNAME=${0##*\/}
 
-MYSQL_ANSIBLE_VERSION="0.3.1"
+MYSQL_ANSIBLE_VERSION="0.3.9"
 playbook="mysqld-install.yml"
 action=
 env=
@@ -29,10 +29,16 @@ version()
 # MAIN
 #
 rt=0
+group=
 dryrun=1
+verbose=0
 
 while [ $# -gt 0 ]; do
     case "$1" in
+        -g|--group)
+            group="$2"
+            shift
+            ;;
         -h|--help)
             usage
             exit 0
@@ -40,6 +46,9 @@ while [ $# -gt 0 ]; do
         -T|--tags)
             tags="$2"
             shift
+            ;;
+        -v|--verbose)
+            verbose=1
             ;;
         -V|--version)
             version
@@ -66,10 +75,26 @@ fi
 
 echo "Running Ansible Playbook: '$playbook'"
 echo ""
-echo "( ansible-playbook -i inventory/$env/hosts $playbook )"
 
+cmd="ansible-playbook -i inventory/$env/hosts"
+
+if [ $verbose -eq 1 ]; then
+    cmd="$cmd -vvv"
+fi
+
+if [ -n "$group" ]; then
+    cmd="$cmd -l $group"
+fi
+
+if [ -n "$tags" ]; then
+    cmd="$cmd --tags $tags"
+fi
+
+cmd="$cmd $playbook"
+
+echo "( $cmd )"
 if [ $dryrun -eq 0 ]; then
-    ( ansible-playbook -i inventory/$env/hosts $playbook )
+    ( $cmd )
     rt=$?
 fi
 
