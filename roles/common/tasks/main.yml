@@ -19,7 +19,7 @@
 
 - name: Install Mysql Community Repo
   yum:
-    name: https://repo.mysql.com/mysql57-community-release-el7.rpm
+    name: '{{ mysql_community_rpm_uri }}'
     state: present
   become: true
   tags: [ server, client ]

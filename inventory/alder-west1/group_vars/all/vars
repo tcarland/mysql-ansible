@@ -22,3 +22,5 @@ mysql_connector_srcpath: '{{ mysql_tmp_dir }}/{{ mysql_connector_name }}'
 
 mysql_connector_uri: 'https://dev.mysql.com/get/Downloads/Connector-J'
 mysql_connector_url: '{{ mysql_connector_uri }}/{{ mysql_connector_tarball }}'
+
+mysql_community_rpm_uri: 'https://repo.mysql.com/mysql57-community-release-el7.rpm'
