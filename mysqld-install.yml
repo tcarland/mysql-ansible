@@ -7,7 +7,7 @@
   hosts: all
   gather_facts: false
   roles:
-    - 'mysql'
+    - 'mysqld'
 
 - name: Configure clients
   hosts: all

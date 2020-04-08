@@ -29,8 +29,8 @@ client02
 
 Variables defined per environment are provided in the inventory file
 `inventory/$env/group_vars/all/vars`. Note that the two hostname
-variables should be defined as the Fully-Qualified Domain Name (fqdn)
-ou you will likely have trouble with MySQL permissions (Grant statements).
+variables should be defined as the matching Fully-Qualified Domain Name (fqdn)
+or there will be trouble with MySQL permissions (Grant statements).
 ```
 ---
 mysql_port: '3306'
@@ -43,6 +43,8 @@ mysql_slave_hostname: 'hostname02.project.internal`
 mysql_master_hosts:
   - '{{ mysql_master_hostname }}'
   - '{{ mysql_slave_hostname }}'
+
+mysql_binlog_format: 'MIXED'
 
 mysql_data_dir: '/var/lib/mysql'
 mysql_tmp_dir: '/tmp/mysql'
@@ -69,8 +71,8 @@ mysql_root_password: 'myrootpw'
 mysql_repl_password: 'myreplpw'
 ```
 
-The inventory also supports a `clients` group for installing just 
-the client libraries and the MySQL JDBC Connector.  The wrapper 
-script `mysql-client-install.sh` runs the install yaml with the 
-supported `client` tag to limit the playbook run to client only 
+The inventory also supports a `clients` group for installing just
+the client libraries and the MySQL JDBC Connector.  The wrapper
+script `mysql-client-install.sh` runs the install yaml with the
+supported `client` tag to limit the playbook run to client only
 install.

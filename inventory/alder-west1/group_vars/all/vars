@@ -9,6 +9,8 @@ mysql_master_hosts:
   - '{{ mysql_master_hostname }}'
   - '{{ mysql_slave_hostname }}'
 
+mysql_binlog_format: 'MIXED'
+
 mysql_data_dir: '/var/lib/mysql'
 mysql_tmp_dir: '/tmp/mysql'
 

@@ -11,3 +11,4 @@ yum_install_client_packages:
  - mysql-community-libs
  - mysql-community-client
  - wget
+ - mysql-connector-python
