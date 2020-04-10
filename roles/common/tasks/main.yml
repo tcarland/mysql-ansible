@@ -24,69 +24,9 @@
   become: true
   tags: [ server, client ]
 
-- name: Install Packages
-  yum:
-    name: '{{ yum_install_packages }}'
-    state: present
-  become: true
-  tags: [ server ]
-
 - name: Install Client Packages
   yum:
-    name: '{{ yum_install_client_packages }}'
+    name: '{{ yum_mysql_client_packages }}'
     state: present
   become: true
   tags: [ client ]
-
-- name: Set Master Config
-  template:
-    src: mysql.cnf
-    dest: /etc/my.cnf
-  vars:
-    mysql_server_id: 1
-  become: true
-  when: inventory_hostname in groups['master']
-  tags: [ server ]
-
-- name: Set Slave Config
-  template:
-    src: mysql.cnf
-    dest: /etc/my.cnf
-  vars:
-    mysql_server_id: 2
-  become: true
-  when: inventory_hostname in groups['slave']
-  tags: [ server ]
-
-- name: Initialize and Start Mysqld
-  block:
-  - name: Initialize mysql
-    become: true
-    shell: 'mysqld --initialize-insecure --user=mysql'
-  - name: Start mysqld
-    become: true
-    shell: 'service mysqld start'
-    notify: mysqld_enable
-  - name: Set root password
-    become: true
-    shell: "mysql -u root --skip-password -e \"ALTER USER root@localhost IDENTIFIED BY '{{ mysql_root_password }}'\""
-  tags: [ init, server ]
-  when: mystat.stat.exists == false
-
-- name: Set ~/my.cnf
-  template:
-    src: mypw.cnf
-    dest: .my.cnf
-  tags: [ server ]
-
-- name: Mysql Root accounts
-  mysql_user:
-    login_user: 'root'
-    login_password: '{{ mysql_root_password }}'
-    name: 'root'
-    password: '{{ mysql_root_password }}'
-    host: '{{ item }}'
-    priv: '*.*:ALL,GRANT'
-    state: present
-  with_items: '{{ mysql_master_hosts }}'
-  tags: [ server ]

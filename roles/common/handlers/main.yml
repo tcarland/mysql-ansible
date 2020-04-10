@@ -1,7 +1,0 @@
----
-- name: mysqld_enable
-  become: true
-  systemd:
-    name: mysqld
-    enabled: yes
-    masked: no

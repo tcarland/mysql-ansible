@@ -3,12 +3,12 @@
 yum_remove_packages:
  - mariadb-libs
 
-yum_install_packages:
+yum_mysql_server_packages:
  - mysql-community-server
  - MySQL-python
 
-yum_install_client_packages:
+yum_mysql_client_packages:
+ - wget
  - mysql-community-libs
  - mysql-community-client
- - wget
  - mysql-connector-python

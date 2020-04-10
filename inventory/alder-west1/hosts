@@ -6,10 +6,9 @@ tdh-nic01
 [slave]
 tdh-nic02
 
-
-[mysql:children]
+[mysqld:children]
 master
 slave
 
 [clients]
-tdh-d[01-04]
+tdh-d[01:04]

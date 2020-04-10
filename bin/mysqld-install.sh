@@ -3,7 +3,7 @@
 #
 PNAME=${0##*\/}
 
-MYSQL_ANSIBLE_VERSION="0.4.0"
+MYSQL_ANSIBLE_VERSION="0.4.9"
 playbook="mysqld-install.yml"
 action=
 env=
@@ -14,7 +14,7 @@ usage()
     echo ""
     echo "Usage: $PNAME <action> <env>"
     echo "  <action> : any action other than 'run' is a 'dryrun'"
-    echo "  <env>    : is the ansible inventory name."
+    echo "  <env>    : is the ansible inventory name (under ./inventory)"
     echo ""
 }
 

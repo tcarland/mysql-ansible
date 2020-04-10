@@ -1,16 +1,16 @@
 ---
-- name: Install MySQLd
+- name: Install MySQL
   hosts: all
   gather_facts: false
 
-- name: Install and Configure MySQL
-  hosts: all
+- name: Install and Configure mysqld
+  hosts: mysqld
   gather_facts: false
   roles:
     - 'mysqld'
 
 - name: Configure clients
-  hosts: all
+  hosts: clients
   gather_facts: false
   roles:
      - 'mysql_client'
