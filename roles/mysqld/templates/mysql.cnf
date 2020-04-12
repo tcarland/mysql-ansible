@@ -14,10 +14,11 @@ read_rnd_buffer_size    = 16M
 sort_buffer_size        = 8M
 join_buffer_size        = 8M
 
-max_connections = 550
+max_connections         = {{ mysql_max_connections }}
 
-default-storage-engine = innodb
-transaction-isolation = READ-COMMITTED
+default-storage-engine  = innodb
+transaction-isolation   = READ-COMMITTED
+
 binlog_format = {{ mysql_binlog_format }}
 
 log-bin=mysql-bin
@@ -26,8 +27,6 @@ expire_logs_days = 10
 server-id={{ mysql_server_id }}
 
 symbolic-links = 0
-
-#log_bin=/var/lib/mysql/mysql_binary_log
 
 datadir={{ mysql_data_dir }}
 socket={{ mysql_data_dir }}/mysql.sock

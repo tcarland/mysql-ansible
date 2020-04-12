@@ -9,7 +9,9 @@ mysql_master_hosts:
   - '{{ mysql_master_hostname }}'
   - '{{ mysql_slave_hostname }}'
 
+# MIXED, ROW, or STATEMENT (first two is typical)
 mysql_binlog_format: 'MIXED'
+mysql_max_connections: '550'
 
 mysql_data_dir: '/var/lib/mysql'
 mysql_tmp_dir: '/tmp/mysql'

@@ -3,7 +3,7 @@
 #
 PNAME=${0##*\/}
 
-MYSQL_ANSIBLE_VERSION="0.4.9"
+MYSQL_ANSIBLE_VERSION="0.5.1"
 playbook="mysqld-install.yml"
 action=
 env=
