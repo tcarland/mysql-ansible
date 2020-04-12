@@ -75,3 +75,17 @@ The inventory also supports a `clients` group for installing just the
 mysql client libraries and the MySQL JDBC Connector.  The wrapper
 script `mysql-client-install.sh` runs the install yaml with the
 supported `client` tag to limit the playbook run to client only install.
+
+Note that the client role installs a specific version of the MySQL Java
+Connector manually.  First, not all versions of the mysql connector are equal
+and there are absolutely compatibility issues with different versions. The
+version chosen (currently 5.1.46) has been tested with a large number of
+environments and works well with both older MySQL 5.5 and the currently
+deploying MySQL 5.7.  The latter is the preferred version of MySQL most
+compatible with the larger application ecosystem and is still the best
+version for many projects (including Apache Hive).
+
+The connector is installed manually, primarily to avoid pulling in RPM
+dependencies that may not be desired by this playbook. Namely, or most
+importantly, we do NOT wish to install Java from within this playbook
+based simply by the connector rpm dependency.
