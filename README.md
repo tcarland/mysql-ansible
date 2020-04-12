@@ -16,7 +16,7 @@ hostname01
 [slave]
 hostname02
 
-[mysql:children]
+[mysqld:children]
 master
 slave
 
@@ -45,6 +45,7 @@ mysql_master_hosts:
   - '{{ mysql_slave_hostname }}'
 
 mysql_binlog_format: 'MIXED'
+mysql_max_connections: '350'
 
 mysql_data_dir: '/var/lib/mysql'
 mysql_tmp_dir: '/tmp/mysql'
