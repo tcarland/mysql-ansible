@@ -62,8 +62,7 @@ mysql_connector_uri: 'https://dev.mysql.com/get/Downloads/Connector-J'
 mysql_connector_url: '{{ mysql_connector_uri }}/{{ mysql_connector_tarball }}'
 ```
 
-
-MySQL passwords are provided by the vault file
+MySQL passwords are provided by the inventory vault file
 `inventory/$env/group_vars/all/vault` with passwords defined for the root
 and replication accounts.
 ```
@@ -72,8 +71,7 @@ mysql_root_password: 'myrootpw'
 mysql_repl_password: 'myreplpw'
 ```
 
-The inventory also supports a `clients` group for installing just
-the client libraries and the MySQL JDBC Connector.  The wrapper
+The inventory also supports a `clients` group for installing just the
+mysql client libraries and the MySQL JDBC Connector.  The wrapper
 script `mysql-client-install.sh` runs the install yaml with the
-supported `client` tag to limit the playbook run to client only
-install.
+supported `client` tag to limit the playbook run to client only install.
