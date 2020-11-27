@@ -82,10 +82,10 @@ and there are absolutely compatibility issues with different versions. The
 version chosen (currently 5.1.46) has been tested with a large number of
 environments and works well with both older MySQL 5.5 and the currently
 deploying MySQL 5.7.  The latter is the preferred version of MySQL most
-compatible with the larger application ecosystem and is still the best
-version for many projects (including Apache Hive).
+compatible with the larger (hadoop) application ecosystem and is still the 
+best version for compatability across many projects (namely Apache Hive).
 
 The connector is installed manually, primarily to avoid pulling in RPM
-dependencies that may not be desired by this playbook. Namely, or most
-importantly, we do NOT wish to install Java from within this playbook
-based simply by the connector rpm dependency.
+dependencies that may not be desired by this playbook. Most importantly, 
+we do NOT install the Java JDK from this playbook, which might also occur 
+by trying use the system package repository.
