@@ -2,8 +2,8 @@
 #
 #
 PNAME=${0##*\/}
+MYSQL_ANSIBLE_VERSION="v20.11"
 
-MYSQL_ANSIBLE_VERSION="0.5.1"
 playbook="mysqld-install.yml"
 action=
 env=
@@ -21,7 +21,7 @@ usage()
 version()
 {
     echo ""
-    echo "$PNAME (mysql-ansible) v$MYSQL_ANSIBLE_VERSION"
+    echo "$PNAME (mysql-ansible) $MYSQL_ANSIBLE_VERSION"
     echo ""
 }
 
@@ -39,7 +39,7 @@ while [ $# -gt 0 ]; do
             group="$2"
             shift
             ;;
-        -h|--help)
+        'help'|-h|--help)
             usage
             exit 0
             ;;
@@ -50,7 +50,7 @@ while [ $# -gt 0 ]; do
         -v|--verbose)
             verbose=1
             ;;
-        -V|--version)
+        'version'|-V|--version)
             version
             exit 0
             ;;

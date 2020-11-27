@@ -5,4 +5,4 @@
 *.zip
 .ansible
 inventory/*
-!inventory/alder-west1
+!inventory/example
