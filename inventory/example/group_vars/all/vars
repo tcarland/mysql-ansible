@@ -28,3 +28,7 @@ mysql_connector_uri: 'https://dev.mysql.com/get/Downloads/Connector-J'
 mysql_connector_url: '{{ mysql_connector_uri }}/{{ mysql_connector_tarball }}'
 
 mysql_community_rpm_uri: 'https://repo.mysql.com/mysql57-community-release-el7.rpm'
+
+mysql_community_deb_uri: 'http://repo.mysql.com/'
+mysql_community_deb_pkg: 'mysql-apt-config_0.8.16-1_all.deb'
+mysql_community_deb_md5: 'f6a7c41f04cc4fea7ade285092eea77a'

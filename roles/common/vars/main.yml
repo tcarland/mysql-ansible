@@ -12,3 +12,16 @@ yum_mysql_client_packages:
  - mysql-community-libs
  - mysql-community-client
  - mysql-connector-python
+
+apt_packages:
+ - xz-utils
+
+apt_mysql_server_packages:
+ - mysql-community-server
+ - MySQL-python
+
+apt_mysql_client_packages:
+ - wget
+ - mysql-community-libs
+ - mysql-community-client
+ - mysql-connector-python

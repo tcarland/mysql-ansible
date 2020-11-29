@@ -10,23 +10,43 @@
   debug: 'var=mystat'
   tags: [ server ]
 
-- name: Remove unwanted packages
-  yum:
-    name: '{{ yum_remove_packages }}'
-    state: absent
+- name: Install Mysql Community Edition Repo (RHEL/CentOS)
+  block:
+  - name: Remove unwanted packages
+    yum:
+      name: '{{ yum_remove_packages }}'
+      state: absent
+  - name: Install Mysql Community Repo (RHEL/CentOS)
+    yum:
+      name: '{{ mysql_community_rpm_uri }}'
+      state: present
+  - name: Install Client Packages (RHEL/CentOS)
+    yum:
+      name: '{{ yum_mysql_client_packages }}'
+      state: present
   become: true
   tags: [ server, client ]
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
 
-- name: Install Mysql Community Repo
-  yum:
-    name: '{{ mysql_community_rpm_uri }}'
-    state: present
+- name: Install Mysql Community Repository (Debian/Ubuntu)
+  block:
+  - name: Install apt prereqs
+    apt:
+      name: '{{ apt_packages }}'
+      state: present
+  - name: Acquire deb archive
+    get_url:
+      url: '{{ mysql_community_deb_uri }}{{ mysql_community_deb_pkg }}'
+      dest: '/tmp'
+      checksum: 'md5:{{ mysql_community_deb_md5 }}'
+      mode: 0755
+  - name: Install Mysql Repository deb archive
+    apt:
+      deb: '/tmp/{{ mysql_community_deb_pkg }}'
+  - name: Install Client Packages (Debian/Ubuntu)
+    apt:
+      name: '{{ apt_mysql_client_packages }}'
+      state: present
   become: true
   tags: [ server, client ]
-
-- name: Install Client Packages
-  yum:
-    name: '{{ yum_mysql_client_packages }}'
-    state: present
-  become: true
-  tags: [ client ]
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
