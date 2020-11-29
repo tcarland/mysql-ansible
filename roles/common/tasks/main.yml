@@ -7,7 +7,8 @@
   tags: [ server ]
 
 - name: mysql datadir stat
-  debug: 'var=mystat'
+  debug: 
+    var: mystat
   tags: [ server ]
 
 - name: Install Mysql Community Edition Repo (RHEL/CentOS)
