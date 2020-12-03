@@ -1,10 +1,19 @@
 ---
-- name: Install Packages
+- name: Install Packages (RHEL/CentOS)
   yum:
     name: '{{ yum_mysql_server_packages }}'
     state: present
   become: true
   tags: [ server ]
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+
+- name: Install Packages (Debian/Ubuntu)
+  yum:
+    name: '{{ apt_mysql_server_packages }}'
+    state: present
+  become: true
+  tags: [ server ]
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
 
 - name: Set Master Config
   template:

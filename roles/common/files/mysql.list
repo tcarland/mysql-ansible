@@ -1,0 +1,2 @@
+deb http://repo.mysql.com/apt/ubuntu/ focal mysql-5.7
+deb http://repo.mysql.com/apt/ubuntu/ focal connector-python-8.0
