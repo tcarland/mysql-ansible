@@ -1,16 +1,12 @@
 ---
 - name: Install MySQL
-  hosts: all
-  gather_facts: false
-
-- name: Install and Configure mysqld
   hosts: mysqld
-  gather_facts: false
+  gather_facts: True
   roles:
     - 'mysqld'
 
 - name: Configure clients
   hosts: clients
-  gather_facts: false
+  gather_facts: True
   roles:
-     - 'mysql_client'
+     - 'common'

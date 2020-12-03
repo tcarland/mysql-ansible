@@ -25,6 +25,14 @@
     yum:
       name: '{{ yum_mysql_client_packages }}'
       state: present
+  - name: Check for existing package
+    shell: 'rpm -q {{ mysql_python_connector_name }}'
+    register: rpmcheck
+    failed_when: no
+    changed_when: no
+  - name: Install Python connector
+    shell: 'rpm -Uh {{ mysql_python_connector_uri }} --nodeps'
+    when: rpmcheck.stdout.find('is not installed') != -1
   become: true
   tags: [ server, client ]
   when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
@@ -35,19 +43,71 @@
     apt:
       name: '{{ apt_packages }}'
       state: present
-  - name: Acquire deb archive
-    get_url:
-      url: '{{ mysql_community_deb_uri }}{{ mysql_community_deb_pkg }}'
-      dest: '/tmp'
-      checksum: 'md5:{{ mysql_community_deb_md5 }}'
-      mode: 0755
-  - name: Install Mysql Repository deb archive
-    apt:
-      deb: '/tmp/{{ mysql_community_deb_pkg }}'
+  - name: Set apt source
+    copy:
+      src: 'mysql.list'
+      dest: '/etc/apt/sources.list.d'
+      mode: 0644
+  - name: Add Mysql Community Repo Key
+    apt_key:
+      id: 5072E1F5
+      url: pgp.mit.edu
+      state: present
   - name: Install Client Packages (Debian/Ubuntu)
     apt:
       name: '{{ apt_mysql_client_packages }}'
+      update_cache: yes
       state: present
   become: true
   tags: [ server, client ]
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+- name: Create tmp directory
+  file:
+    path: '{{ mysql_tmp_dir }}'
+    state: directory
+    mode: 0755
+  tags: [ client ]
+
+- name: Acquire Java Connector
+  get_url:
+    url: '{{ mysql_connector_url }}'
+    dest: '{{ mysql_tmp_dir }}/{{ mysql_java_connector_tarball }}'
+    checksum: md5:6419f5a73c76991d73e27a93babca263
+  tags: [ client ]
+
+- name: Extract Java Connector
+  unarchive:
+    src: '{{ mysql_tmp_dir }}/{{ mysql_java_connector_tarball }}'
+    dest: '{{ mysql_tmp_dir }}'
+    remote_src: 'yes'
+    creates: '{{ mysql_tmp_dir }}/{{ mysql_java_connector_name }}'
+  tags: [ client ]
+
+- name: Ensure /usr/share/java exists
+  become: true
+  file:
+    path: '{{ mysql_connector_path }}'
+    state: directory
+    mode: 0755
+  tags: [ client ]
+
+- name: Copy Connector J
+  become: true
+  shell: 'cp {{ mysql_connector_srcpath }}/{{ mysql_java_connector_jarfile }} {{ mysql_connector_path }}/'
+  tags: [ client ]
+
+- name: Link Mysql Connector jar
+  become: true
+  file:
+    src: '{{ mysql_connector_path }}/{{ mysql_java_connector_jarfile }}'
+    dest: '{{ mysql_connector_path }}/{{ mysql_java_connector }}.jar'
+    state: link
+  tags: [ client ]
+
+- name: Cleanup state
+  become: true
+  file:
+    path: '{{ mysql_tmp_dir }}'
+    state: absent
+  tags: [ client ]
