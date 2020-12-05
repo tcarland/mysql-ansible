@@ -71,7 +71,7 @@
 
 - name: Acquire Java Connector
   get_url:
-    url: '{{ mysql_connector_url }}'
+    url: '{{ mysql_java_connector_url }}'
     dest: '{{ mysql_tmp_dir }}/{{ mysql_java_connector_tarball }}'
     checksum: md5:6419f5a73c76991d73e27a93babca263
   tags: [ client ]
