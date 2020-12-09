@@ -1,24 +1,49 @@
 ---
-- name: Install Packages (RHEL/CentOS)
-  yum:
-    name: '{{ yum_mysql_server_packages }}'
-    state: present
-  become: true
-  tags: [ server ]
-  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
-
 - name: Install Packages (Debian/Ubuntu)
   yum:
     name: '{{ apt_mysql_server_packages }}'
     state: present
   become: true
   tags: [ server ]
-  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+- name: Stop Mysqld
+  service:
+    name: 'mysqld'
+    state: 'stopped'
+  become: true
+
+- name: Reset mysqld state
+  block:
+  - name: Remove existing db state
+    file:
+      path: '/var/lib/mysql'
+      state: absent
+  - name: Recreate mysqld data dir
+    file:
+      path: '{{ mysql_data_dir }}'
+      owner: 'mysql'
+      group: 'mysql'
+      mode: 0700
+      state: directory
+  - name: Update AppArmor data dir access pt.1
+    lineinfile:
+      dest: '/etc/apparmor.d/usr.sbin.mysqld'
+      regexp: '  /var/lib/mysql/ r,'
+      line: '  {{ mysql_data_dir }}/ r'
+      backup: yes
+  - name: Update AppArmor data dir access pt.2
+    lineinfile:
+      dest: '/etc/apparmor.d/usr.sbin.mysqld'
+      regexp: '  /var/lib/mysql/** rwk,'
+      line: '  {{ mysql_data_dir }}/** rwk'
+      backup: yes
+  become: true
+  tags: [ init, server ]
 
 - name: Set Master Config
   template:
     src: mysql.cnf
-    dest: /etc/my.cnf
+    dest: /etc/mysql/mysql.conf.d/mysqld.cnf
   vars:
     mysql_server_id: 1
   become: true
@@ -28,7 +53,7 @@
 - name: Set Slave Config
   template:
     src: mysql.cnf
-    dest: /etc/my.cnf
+    dest: /etc/mysql/mysql.conf.d/mysqld.cnf
   vars:
     mysql_server_id: 2
   become: true
@@ -38,17 +63,15 @@
 - name: Initialize and Start Mysqld
   block:
   - name: Initialize mysql
-    become: true
     shell: 'mysqld --initialize-insecure --user=mysql'
-  - name: Start mysqld
-    become: true
+  - name: Start mysqld (Debian/Ubuntu)
     service:
-      name: 'mysqld'
+      name: 'mysql'
       state: 'started'
       enabled: 'yes'
   - name: Set root password
-    become: true
     shell: "mysql -u root --skip-password -e \"ALTER USER root@localhost IDENTIFIED BY '{{ mysql_root_password }}'\""
+  become: true
   tags: [ init, server ]
   when: mystat.stat.exists == false
 
