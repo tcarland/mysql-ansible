@@ -8,9 +8,10 @@
 
 - name: Stop Mysqld
   service:
-    name: 'mysqld'
+    name: 'mysql'
     state: 'stopped'
   become: true
+  tags: [ server ]
 
 - name: Reset mysqld state
   block:
@@ -30,15 +31,16 @@
       dest: '/etc/apparmor.d/usr.sbin.mysqld'
       regexp: '  /var/lib/mysql/ r,'
       line: '  {{ mysql_data_dir }}/ r'
-      backup: yes
+      backup: no
   - name: Update AppArmor data dir access pt.2
     lineinfile:
       dest: '/etc/apparmor.d/usr.sbin.mysqld'
-      regexp: '  /var/lib/mysql/** rwk,'
+      regexp: '  /var/lib/mysql/\*\* rwk,'
       line: '  {{ mysql_data_dir }}/** rwk'
-      backup: yes
+      backup: no
   become: true
   tags: [ init, server ]
+  when: mystat.stat.exists == false
 
 - name: Set Master Config
   template:
@@ -60,7 +62,7 @@
   when: inventory_hostname in groups['slave']
   tags: [ server ]
 
-- name: Initialize and Start Mysqld
+- name: Initialize Mysqld
   block:
   - name: Initialize mysql
     shell: 'mysqld --initialize-insecure --user=mysql'
@@ -74,6 +76,14 @@
   become: true
   tags: [ init, server ]
   when: mystat.stat.exists == false
+
+- name: Restart Mysqld once more..
+  become: true
+  service:
+    name: 'mysql'
+    state: 'started'
+    enabled: 'yes'
+  tags: [ server ]
 
 - name: Set ~/my.cnf
   template:
