@@ -2,7 +2,7 @@
 #
 #
 PNAME=${0##*\/}
-MYSQL_ANSIBLE_VERSION="v20.12.8"
+MYSQL_ANSIBLE_VERSION="v20.12.9"
 
 playbook="mysqld-install.yml"
 action=
