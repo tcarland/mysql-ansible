@@ -1,0 +1,6 @@
+---
+- name: restart_apparmor
+  become: true
+  service:
+    name: 'apparmor'
+    state: 'restarted'

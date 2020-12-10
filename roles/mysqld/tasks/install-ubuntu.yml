@@ -24,7 +24,7 @@
       path: '{{ mysql_data_dir }}'
       owner: 'mysql'
       group: 'mysql'
-      mode: 0700
+      mode: 0750
       state: directory
   - name: Update AppArmor data dir access pt.1
     lineinfile:
@@ -38,14 +38,15 @@
       regexp: '  /var/lib/mysql/\*\* rwk,'
       line: '  {{ mysql_data_dir }}/** rwk'
       backup: no
+    notify: restart_apparmor
   become: true
   tags: [ init, server ]
   when: mystat.stat.exists == false
 
 - name: Set Master Config
   template:
-    src: mysql.cnf
-    dest: /etc/mysql/mysql.conf.d/mysqld.cnf
+    src: mysqld.cnf
+    dest: /etc/mysql/conf.d/mysqld.cnf
   vars:
     mysql_server_id: 1
   become: true
@@ -54,15 +55,15 @@
 
 - name: Set Slave Config
   template:
-    src: mysql.cnf
-    dest: /etc/mysql/mysql.conf.d/mysqld.cnf
+    src: mysqld.cnf
+    dest: /etc/mysql/conf.d/mysqld.cnf
   vars:
     mysql_server_id: 2
   become: true
   when: inventory_hostname in groups['slave']
   tags: [ server ]
 
-- name: Initialize Mysqld
+- name: Initialize MySQLd
   block:
   - name: Initialize mysql
     shell: 'mysqld --initialize-insecure --user=mysql'
@@ -76,14 +77,6 @@
   become: true
   tags: [ init, server ]
   when: mystat.stat.exists == false
-
-- name: Restart Mysqld once more..
-  become: true
-  service:
-    name: 'mysql'
-    state: 'started'
-    enabled: 'yes'
-  tags: [ server ]
 
 - name: Set ~/my.cnf
   template:

@@ -9,7 +9,7 @@
 
 - name: Set Master Config
   template:
-    src: mysql.cnf
+    src: mysqld.cnf
     dest: /etc/my.cnf
   vars:
     mysql_server_id: 1
@@ -19,7 +19,7 @@
 
 - name: Set Slave Config
   template:
-    src: mysql.cnf
+    src: mysqld.cnf
     dest: /etc/my.cnf
   vars:
     mysql_server_id: 2

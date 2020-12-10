@@ -21,7 +21,7 @@ transaction-isolation   = READ-COMMITTED
 
 binlog_format = {{ mysql_binlog_format }}
 
-log-bin=mysql-bin
+log-bin = mysql-bin
 max_binlog_size = 500M
 expire_logs_days = 10
 server-id={{ mysql_server_id }}
@@ -43,5 +43,5 @@ innodb_log_file_size                = 512M
 innodb_large_prefix
 
 [mysqld_safe]
-log-error=/var/log/mysqld.log
+log-error=/var/log/mysql/mysqld.log
 pid-file=/var/run/mysqld/mysqld.pid
