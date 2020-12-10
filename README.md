@@ -50,16 +50,24 @@ mysql_max_connections: '350'
 mysql_data_dir: '/var/lib/mysql'
 mysql_tmp_dir: '/tmp/mysql'
 
-mysql_connector: 'mysql-connector-java'
-mysql_connector_name: '{{ mysql_connector }}-5.1.46'
-mysql_connector_jarfile: '{{ mysql_connector_name }}-bin.jar'
-mysql_connector_tarball: '{{ mysql_connector_name }}.tar.gz'
+mysql_java_connector: 'mysql-connector-java'
+mysql_java_connector_name: '{{ mysql_java_connector }}-5.1.46'
+mysql_java_connector_jarfile: '{{ mysql_java_connector_name }}-bin.jar'
+mysql_java_connector_tarball: '{{ mysql_java_connector_name }}.tar.gz'
 
 mysql_connector_path: '/usr/share/java'
-mysql_connector_srcpath: '{{ mysql_tmp_dir }}/{{ mysql_connector_name }}'
+mysql_connector_srcpath: '{{ mysql_tmp_dir }}/{{ mysql_java_connector_name }}'
 
-mysql_connector_uri: 'https://dev.mysql.com/get/Downloads/Connector-J'
-mysql_connector_url: '{{ mysql_connector_uri }}/{{ mysql_connector_tarball }}'
+mysql_java_connector_uri: 'https://dev.mysql.com/get/Downloads/Connector-J'
+mysql_java_connector_url: '{{ mysql_java_connector_uri }}/{{ mysql_java_connector_tarball }}'
+
+mysql_python_connector_uri: 'https://dev.mysql.com/get/Downloads/Connector-Python/mysql-connector-python-8.0.22-1.el7.x86_64.rpm'
+mysql_python_connector_name: 'mysql-connector-python'
+
+mysql_community_rpm_uri: 'https://repo.mysql.com/mysql57-community-release-el7.rpm'
+mysql_community_deb_uri: 'http://repo.mysql.com/'
+mysql_community_deb_pkg: 'mysql-apt-config_0.8.16-1_all.deb'
+mysql_community_deb_md5: 'f6a7c41f04cc4fea7ade285092eea77a'
 ```
 
 MySQL passwords are provided by the inventory vault file
