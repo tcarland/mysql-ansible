@@ -34,7 +34,7 @@
     shell: 'rpm -Uh {{ mysql_python_connector_uri }} --nodeps'
     when: rpmcheck.stdout.find('is not installed') != -1
   become: true
-  tags: [ server, client ]
+  tags: [ server5, client5 ]
   when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
 
 - name: Install Mysql Community Repository (Debian/Ubuntu)
@@ -54,7 +54,7 @@
       state: present
   - name: Install Client Packages (Debian/Ubuntu)
     apt:
-      name: '{{ apt_mysql_client_packages }}'
+      name: '{{ apt_mysql5_client_packages }}'
       update_cache: yes
       state: present
   - name: Install python3 mysql package
@@ -62,7 +62,7 @@
       name: 'PyMySQL'
       state: present
   become: true
-  tags: [ server, client ]
+  tags: [ server5, client5 ]
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
 
 - name: Create tmp directory

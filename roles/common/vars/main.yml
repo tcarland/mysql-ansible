@@ -16,13 +16,13 @@ apt_packages:
  - xz-utils
  - python3-pip
 
-apt_mysql_server_packages:
+apt_mysql5_server_packages:
  - mysql-client=5.7.32-1ubuntu18.04
  - mysql-community-server
  - mysql-connector-python
  - python3-mysqldb
 
-apt_mysql_client_packages:
+apt_mysql5_client_packages:
  - wget
  - mysql-client=5.7.32-1ubuntu18.04
  - mysql-connector-python

@@ -1,17 +1,17 @@
 ---
 - name: Install Packages (Debian/Ubuntu)
   yum:
-    name: '{{ apt_mysql_server_packages }}'
+    name: '{{ apt_mysql5_server_packages }}'
     state: present
   become: true
-  tags: [ server ]
+  tags: [ server5 ]
 
 - name: Stop Mysqld
   service:
     name: 'mysql'
     state: 'stopped'
   become: true
-  tags: [ server ]
+  tags: [ server5 ]
 
 - name: Reset mysqld state
   block:
@@ -40,7 +40,7 @@
       backup: no
     notify: restart_apparmor
   become: true
-  tags: [ init, server ]
+  tags: [ init, server5 ]
   when: mystat.stat.exists == false
 
 - name: Set Master Config
