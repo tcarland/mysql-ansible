@@ -67,6 +67,12 @@ if [[ $action == "run" ]]; then
     dryrun=0
 fi
 
+if [ -z "$tags" ]; then
+    tags="server5"
+else
+    tags="${tags},server5"
+fi
+
 echo "Running Ansible Playbook: '$playbook'"
 echo ""
 
