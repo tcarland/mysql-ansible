@@ -4,12 +4,12 @@
   stat:
     path: '{{ mysql_data_dir }}/mysql'
   register: mystat
-  tags: [ server ]
+  tags: [ server5 ]
 
 - name: mysql datadir stat
   debug: 
     var: mystat
-  tags: [ server ]
+  tags: [ server5 ]
 
 - name: Install Mysql Community Edition Repo (RHEL/CentOS)
   block:
@@ -70,14 +70,14 @@
     path: '{{ mysql_tmp_dir }}'
     state: directory
     mode: 0755
-  tags: [ client ]
+  tags: [ client5 ]
 
 - name: Acquire Java Connector
   get_url:
     url: '{{ mysql_java_connector_url }}'
     dest: '{{ mysql_tmp_dir }}/{{ mysql_java_connector_tarball }}'
     checksum: md5:6419f5a73c76991d73e27a93babca263
-  tags: [ client ]
+  tags: [ client5 ]
 
 - name: Extract Java Connector
   unarchive:
@@ -85,7 +85,7 @@
     dest: '{{ mysql_tmp_dir }}'
     remote_src: 'yes'
     creates: '{{ mysql_tmp_dir }}/{{ mysql_java_connector_name }}'
-  tags: [ client ]
+  tags: [ client5 ]
 
 - name: Ensure /usr/share/java exists
   become: true
@@ -93,12 +93,12 @@
     path: '{{ mysql_connector_path }}'
     state: directory
     mode: 0755
-  tags: [ client ]
+  tags: [ client5 ]
 
 - name: Copy Connector J
   become: true
   shell: 'cp {{ mysql_connector_srcpath }}/{{ mysql_java_connector_jarfile }} {{ mysql_connector_path }}/'
-  tags: [ client ]
+  tags: [ client5 ]
 
 - name: Link Mysql Connector jar
   become: true
@@ -106,11 +106,11 @@
     src: '{{ mysql_connector_path }}/{{ mysql_java_connector_jarfile }}'
     dest: '{{ mysql_connector_path }}/{{ mysql_java_connector }}.jar'
     state: link
-  tags: [ client ]
+  tags: [ client5 ]
 
 - name: Cleanup state
   become: true
   file:
     path: '{{ mysql_tmp_dir }}'
     state: absent
-  tags: [ client ]
+  tags: [ client5 ]

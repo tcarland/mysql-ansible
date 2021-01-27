@@ -51,7 +51,7 @@
     mysql_server_id: 1
   become: true
   when: inventory_hostname in groups['master']
-  tags: [ server ]
+  tags: [ server5 ]
 
 - name: Set Slave Config
   template:
@@ -61,7 +61,7 @@
     mysql_server_id: 2
   become: true
   when: inventory_hostname in groups['slave']
-  tags: [ server ]
+  tags: [ server5 ]
 
 - name: Initialize MySQLd
   block:
@@ -75,14 +75,14 @@
   - name: Set root password
     shell: "mysql -u root --skip-password -e \"ALTER USER root@localhost IDENTIFIED BY '{{ mysql_root_password }}'\""
   become: true
-  tags: [ init, server ]
+  tags: [ init, server5 ]
   when: mystat.stat.exists == false
 
 - name: Set ~/my.cnf
   template:
     src: mypw.cnf
     dest: .my.cnf
-  tags: [ server ]
+  tags: [ server5 ]
 
 - name: Mysql Root accounts
   mysql_user:
@@ -94,4 +94,4 @@
     priv: '*.*:ALL,GRANT'
     state: present
   with_items: '{{ mysql_master_hosts }}'
-  tags: [ server ]
+  tags: [ server5 ]

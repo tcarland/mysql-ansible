@@ -5,6 +5,7 @@ PNAME=${0##*\/}
 MYSQL_ANSIBLE_VERSION="v21.01"
 
 playbook="mysqld-install.yml"
+tags="server5,client5"
 action=
 env=
 
@@ -65,12 +66,6 @@ fi
 
 if [[ $action == "run" ]]; then
     dryrun=0
-fi
-
-if [ -z "$tags" ]; then
-    tags="server5"
-else
-    tags="${tags},server5"
 fi
 
 echo "Running Ansible Playbook: '$playbook'"
