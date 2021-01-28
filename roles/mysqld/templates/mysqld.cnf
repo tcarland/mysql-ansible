@@ -29,7 +29,7 @@ server-id={{ mysql_server_id }}
 symbolic-links = 0
 
 datadir={{ mysql_data_dir }}
-socket=/var/run/mysqld/mysqld.sock
+socket=/var/lib/mysql/mysql.sock
 
 # InnoDB settings
 innodb_file_format                  = Barracuda
