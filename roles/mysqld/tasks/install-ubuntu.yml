@@ -63,7 +63,7 @@
   when: inventory_hostname in groups['slave']
   tags: [ server5, server8 ]
 
-- name: Initialize MySQLd
+- name: Initialize mysqld
   block:
   - name: Initialize mysql
     shell: 'mysqld --initialize-insecure --user=mysql'
@@ -75,7 +75,7 @@
   - name: Set root password
     shell: "mysql -u root --skip-password -e \"ALTER USER root@localhost IDENTIFIED BY '{{ mysql_root_password }}'\""
   become: true
-  tags: [ init, server5 ]
+  tags: [ init, server5, server8 ]
   when: mystat.stat.exists == false
 
 - name: Set ~/my.cnf
