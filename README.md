@@ -80,7 +80,7 @@ we do NOT install the Java JDK from this playbook, which might also occur
 by trying use the system package repository.
 
 
-TODO: Attempt a secure install, acquiring pw from log
+- Attempt a secure install, acquiring pw from log
 ```
 - name: Enable mysql
   systemd:
