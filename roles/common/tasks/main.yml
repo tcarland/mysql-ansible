@@ -4,88 +4,19 @@
   stat:
     path: '{{ mysql_data_dir }}/mysql'
   register: mystat
-  tags: [ server5 ]
+  tags: [ server5, server8 ]
 
 - name: mysql datadir stat
   debug: 
     var: mystat
-  tags: [ server5 ]
-
-- name: Install Mysql Community Edition Repo (RHEL/CentOS)
-  block:
-  - name: Remove unwanted packages
-    yum:
-      name: '{{ yum_remove_packages }}'
-      state: absent
-  - name: Install Mysql Community Repo (RHEL/CentOS)
-    yum:
-      name: '{{ mysql_community_rpm_uri }}'
-      state: present
-  - name: Install Client Packages (RHEL/CentOS)
-    yum:
-      name: '{{ yum_mysql_client_packages }}'
-      state: present
-  - name: Check for existing package
-    shell: 'rpm -q {{ mysql_python_connector_name }}'
-    register: rpmcheck
-    failed_when: no
-    changed_when: no
-  - name: Install Python connector
-    shell: 'rpm -Uh {{ mysql_python_connector_uri }} --nodeps'
-    when: rpmcheck.stdout.find('is not installed') != -1
-  become: true
-  tags: [ server5, client5 ]
-  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
-
-- name: Install Mysql Community Repository (Debian/Ubuntu)
-  block:
-  - name: Install apt prereqs
-    apt:
-      name: '{{ apt_packages }}'
-      state: present
-  - name: Set apt source
-    copy:
-      src: 'mysql5.list'
-      dest: '/etc/apt/sources.list.d/mysql.list'
-      mode: 0644
-  - name: Add Mysql Community Repo Key
-    apt_key:
-      data: "{{ lookup('file', 'mysql.gpg') }}"
-      state: present
-  - name: Install Client Packages (Debian/Ubuntu)
-    apt:
-      name: '{{ apt_mysql5_client_packages }}'
-      update_cache: yes
-      state: present
-  - name: Install python3 mysql package
-    pip:
-      name: 'PyMySQL'
-      state: present
-  become: true
-  tags: [ server5, client5 ]
-  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+  tags: [ server5, server8 ]
 
 - name: Create tmp directory
   file:
     path: '{{ mysql_tmp_dir }}'
     state: directory
     mode: 0755
-  tags: [ client5 ]
-
-- name: Acquire Java Connector
-  get_url:
-    url: '{{ mysql_java_connector_url }}'
-    dest: '{{ mysql_tmp_dir }}/{{ mysql_java_connector_tarball }}'
-    checksum: md5:6419f5a73c76991d73e27a93babca263
-  tags: [ client5 ]
-
-- name: Extract Java Connector
-  unarchive:
-    src: '{{ mysql_tmp_dir }}/{{ mysql_java_connector_tarball }}'
-    dest: '{{ mysql_tmp_dir }}'
-    remote_src: 'yes'
-    creates: '{{ mysql_tmp_dir }}/{{ mysql_java_connector_name }}'
-  tags: [ client5 ]
+  tags: [ client5, client8 ]
 
 - name: Ensure /usr/share/java exists
   become: true
@@ -93,24 +24,17 @@
     path: '{{ mysql_connector_path }}'
     state: directory
     mode: 0755
-  tags: [ client5 ]
+  tags: [ client5, client8 ]
 
-- name: Copy Connector J
-  become: true
-  shell: 'cp {{ mysql_connector_srcpath }}/{{ mysql_java_connector_jarfile }} {{ mysql_connector_path }}/'
-  tags: [ client5 ]
+- include: install-rhel.yml
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
 
-- name: Link Mysql Connector jar
-  become: true
-  file:
-    src: '{{ mysql_connector_path }}/{{ mysql_java_connector_jarfile }}'
-    dest: '{{ mysql_connector_path }}/{{ mysql_java_connector }}.jar'
-    state: link
-  tags: [ client5 ]
+- include: install-ubuntu.yml
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
 
 - name: Cleanup state
   become: true
   file:
     path: '{{ mysql_tmp_dir }}'
     state: absent
-  tags: [ client5 ]
+  tags: [ client5, client8 ]

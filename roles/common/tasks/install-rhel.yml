@@ -1,0 +1,57 @@
+---
+- name: mysql datadir stat
+  debug: 
+    var: mystat
+  tags: [ server5, server8 ]
+
+- name: Install Mysql 5.7 Community Edition Repo (RHEL/CentOS)
+  block:
+  - name: Remove unwanted packages
+    yum:
+      name: '{{ yum_remove_packages }}'
+      state: absent
+  - name: Install Mysql Community Repo (RHEL/CentOS)
+    yum:
+      name: '{{ mysql5_community_el7_uri }}'
+      state: present
+  - name: Install Client Packages (RHEL/CentOS)
+    yum:
+      name: '{{ yum_mysql_client_packages }}'
+      state: present
+  - name: Check for existing package
+    shell: 'rpm -q {{ mysql_python_connector_name }}'
+    register: rpmcheck
+    failed_when: no
+    changed_when: no
+  - name: Install Python connector
+    shell: 'rpm -Uh {{ mysql_python_connector_uri }} --nodeps'
+    when: rpmcheck.stdout.find('is not installed') != -1
+  become: true
+  tags: [ server5, client5 ]
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+
+- name: Install Mysql 8.0 Community Edition Repo (RHEL/CentOS)
+  block:
+  - name: Remove unwanted packages
+    yum:
+      name: '{{ yum_remove_packages }}'
+      state: absent
+  - name: Install Mysql Community Repo (RHEL/CentOS)
+    yum:
+      name: '{{ mysql8_community_el7_uri }}'
+      state: present
+  - name: Install Client Packages (RHEL/CentOS)
+    yum:
+      name: '{{ yum_mysql_client_packages }}'
+      state: present
+  - name: Check for existing package
+    shell: 'rpm -q {{ mysql_python_connector_name }}'
+    register: rpmcheck
+    failed_when: no
+    changed_when: no
+  - name: Install Python connector
+    shell: 'rpm -Uh {{ mysql_python_connector_uri }} --nodeps'
+    when: rpmcheck.stdout.find('is not installed') != -1
+  become: true
+  tags: [ server8, client8 ]
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'

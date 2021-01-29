@@ -1,0 +1,102 @@
+---
+- name: Install Mysql 5.7 Community Repository (Debian/Ubuntu)
+  block:
+  - name: Install apt prereqs
+    apt:
+      name: '{{ apt_packages }}'
+      state: present
+  - name: Set apt source
+    copy:
+      src: 'mysql5.list'
+      dest: '/etc/apt/sources.list.d/mysql.list'
+      mode: 0644
+  - name: Add Mysql Community Repo Key
+    apt_key:
+      data: "{{ lookup('file', 'mysql.gpg') }}"
+      state: present
+  - name: Install Client Packages (Debian/Ubuntu)
+    apt:
+      name: '{{ apt_mysql5_client_packages }}'
+      update_cache: yes
+      state: present
+  - name: Install python3 mysql package
+    pip:
+      name: 'PyMySQL'
+      state: present
+  become: true
+  tags: [ server5, client5 ]
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+- name: Install Mysql 8.0 Community Repository (Debian/Ubuntu)
+  block:
+  - name: Install apt prereqs
+    apt:
+      name: '{{ apt_packages }}'
+      state: present
+  - name: Set apt source
+    copy:
+      src: 'mysql8.list'
+      dest: '/etc/apt/sources.list.d/mysql.list'
+      mode: 0644
+  - name: Add Mysql Community Repo Key
+    apt_key:
+      data: "{{ lookup('file', 'mysql.gpg') }}"
+      state: present
+  - name: Install Client Packages (Debian/Ubuntu)
+    apt:
+      name: '{{ apt_mysql8_client_packages }}'
+      update_cache: yes
+      state: present
+  - name: Install python3 mysql package
+    pip:
+      name: 'PyMySQL'
+      state: present
+  become: true
+  tags: [ server8, client8 ]
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+- name: Install Java Connector for Mysql 5.7
+  block:
+  - name: Acquire the Java Connector
+    get_url:
+      url: '{{ mysql5_java_connector_url }}'
+      dest: '{{ mysql_tmp_dir }}/{{ mysql5_java_connector_tarball }}'
+      checksum: md5:6419f5a73c76991d73e27a93babca263
+  - name: Extract Java Connector
+    unarchive:
+      src: '{{ mysql_tmp_dir }}/{{ mysql5_java_connector_tarball }}'
+      dest: '{{ mysql_tmp_dir }}'
+      remote_src: 'yes'
+      creates: '{{ mysql_tmp_dir }}/{{ mysql5_java_connector_name }}'
+  - name: Copy Connector J
+    shell: 'cp {{ mysql5_connector_srcpath }}/{{ mysql5_java_connector_jarfile }} {{ mysql_connector_path }}/'
+  - name: Link Mysql Connector jar
+    file:
+      src: '{{ mysql_connector_path }}/{{ mysql5_java_connector_jarfile }}'
+      dest: '{{ mysql_connector_path }}/{{ mysql_java_connector }}.jar'
+      state: link
+  become: true
+  tags: [ client5 ]
+
+- name: Install Java Connector for Mysql 8.0
+  block:
+  - name: Acquire the Java Connector
+    get_url:
+      url: '{{ mysql8_java_connector_url }}'
+      dest: '{{ mysql_tmp_dir }}/{{ mysql8_java_connector_tarball }}'
+      checksum: md5:0856fa2e627c7ee78019cd0980d04614
+  - name: Extract Java Connector
+    unarchive:
+      src: '{{ mysql_tmp_dir }}/{{ mysql8_java_connector_tarball }}'
+      dest: '{{ mysql_tmp_dir }}'
+      remote_src: 'yes'
+      creates: '{{ mysql_tmp_dir }}/{{ mysql8_java_connector_name }}'
+  - name: Copy Connector J
+    shell: 'cp {{ mysql8_connector_srcpath }}/{{ mysql8_java_connector_jarfile }} {{ mysql_connector_path }}/'
+  - name: Link Mysql Connector jar
+    file:
+      src: '{{ mysql_connector_path }}/{{ mysql8_java_connector_jarfile }}'
+      dest: '{{ mysql_connector_path }}/{{ mysql_java_connector }}.jar'
+      state: link
+  become: true
+  tags: [ client8 ]

@@ -4,7 +4,7 @@
     name: '{{ yum_mysql_server_packages }}'
     state: present
   become: true
-  tags: [ server5 ]
+  tags: [ server5, server8 ]
   when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
 
 - name: Set Master Config
@@ -15,7 +15,7 @@
     mysql_server_id: 1
   become: true
   when: inventory_hostname in groups['master']
-  tags: [ server5 ]
+  tags: [ server5, server8 ]
 
 - name: Set Slave Config
   template:
@@ -25,7 +25,7 @@
     mysql_server_id: 2
   become: true
   when: inventory_hostname in groups['slave']
-  tags: [ server5 ]
+  tags: [ server5, server8 ]
 
 - name: Initialize and Start Mysqld
   block:
@@ -48,7 +48,7 @@
   template:
     src: mypw.cnf
     dest: .my.cnf
-  tags: [ server5 ]
+  tags: [ server5, server8 ]
 
 - name: Mysql Root accounts
   mysql_user:
@@ -60,4 +60,4 @@
     priv: '*.*:ALL,GRANT'
     state: present
   with_items: '{{ mysql_master_hosts }}'
-  tags: [ server5 ]
+  tags: [ server5, server8 ]

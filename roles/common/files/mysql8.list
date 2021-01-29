@@ -1,0 +1,2 @@
+deb http://repo.mysql.com/apt/ubuntu/ bionic mysql-8.0
+deb http://repo.mysql.com/apt/ubuntu/ bionic mysql-tools
