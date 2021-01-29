@@ -41,7 +41,7 @@
   - name: Set root password
     become: true
     shell: "mysql -u root --skip-password -e \"ALTER USER root@localhost IDENTIFIED BY '{{ mysql_root_password }}'\""
-  tags: [ init, server5 ]
+  tags: [ server5, server8 ]
   when: mystat.stat.exists == false
 
 - name: Set ~/my.cnf

@@ -1,8 +1,4 @@
 ---
-- name: mysql datadir stat
-  debug: 
-    var: mystat
-  tags: [ server5, server8 ]
 
 - name: Install Mysql 5.7 Community Edition Repo (RHEL/CentOS)
   block:
