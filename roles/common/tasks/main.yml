@@ -45,8 +45,8 @@
       state: present
   - name: Set apt source
     copy:
-      src: 'mysql.list'
-      dest: '/etc/apt/sources.list.d'
+      src: 'mysql5.list'
+      dest: '/etc/apt/sources.list.d/mysql.list'
       mode: 0644
   - name: Add Mysql Community Repo Key
     apt_key:

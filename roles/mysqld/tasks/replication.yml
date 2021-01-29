@@ -17,6 +17,7 @@
       name: ""
       host_all: yes
       state: absent
+  tags: [ server5 ]
   when: inventory_hostname in groups['master']
 
 - name: MySQL Replication
@@ -58,4 +59,5 @@
       login_password: '{{ mysql_root_password }}'
       mode: startslave
     when: not slave_status.Is_Slave
+  tags: [ server5 ]
   when: inventory_hostname in groups['slave']
