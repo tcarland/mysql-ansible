@@ -48,7 +48,7 @@
       remote_src: 'yes'
       creates: '{{ mysql_tmp_dir }}/{{ mysql5_java_connector_name }}'
   - name: Copy Connector J
-    shell: 'cp {{ mysql5_connector_srcpath }}/{{ mysql5_java_connector_jarfile }} {{ mysql_connector_path }}/'
+    shell: 'cp {{ mysql5_java_connector_srcpath }}/{{ mysql5_java_connector_jarfile }} {{ mysql_connector_path }}/'
   - name: Link Mysql Connector jar
     file:
       src: '{{ mysql_connector_path }}/{{ mysql5_java_connector_jarfile }}'
@@ -71,7 +71,7 @@
       remote_src: 'yes'
       creates: '{{ mysql_tmp_dir }}/{{ mysql8_java_connector_name }}'
   - name: Copy Connector J
-    shell: 'cp {{ mysql8_connector_srcpath }}/{{ mysql8_java_connector_jarfile }} {{ mysql_connector_path }}/'
+    shell: 'cp {{ mysql8_java_connector_srcpath }}/{{ mysql8_java_connector_jarfile }} {{ mysql_connector_path }}/'
   - name: Link Mysql Connector jar
     file:
       src: '{{ mysql_connector_path }}/{{ mysql8_java_connector_jarfile }}'

@@ -55,7 +55,7 @@ mysql5_deb_version: '-1ubuntu18.04'
 
 mysql5_el7_uri: '{{ mysql_community_uri }}/mysql57-community-release-el7.rpm'
 
-mysql5_java_connector_name: '{{ mysql_java_connector }}-{{ mysql5_java_connecter_version }}'
+mysql5_java_connector_name: '{{ mysql_java_connector }}-{{ mysql5_java_connector_version }}'
 mysql5_java_connector_jarfile: '{{ mysql5_java_connector_name }}-bin.jar'
 mysql5_java_connector_tarball: '{{ mysql5_java_connector_name }}.tar.gz'
 
