@@ -44,8 +44,8 @@ mysql_python_connector_uri: 'https://dev.mysql.com/get/Downloads/Connector-Pytho
 mysql_python_connector_name: '{{ mysql_python_connector }}-{{ mysql8_python_connector_version }}'
 mysql_python_connector_el7_rpm: '{{ mysql_python_connector_name }}.el7.x86_64.rpm'
 mysql_python_connector_el8_rpm: '{{ mysql_python_connector_name }}.el8.x86_64.rpm'
-mysql_python_connector_el7_url: '{{ mysql_python_connector_uri }}/{{ mysql_python_connector_el7_rpm }}
-mysql_python_connector_el8_url: '{{ mysql_python_connector_uri }}/{{ mysql_python_connector_el8_rpm }}
+mysql_python_connector_el7_url: '{{ mysql_python_connector_uri }}/{{ mysql_python_connector_el7_rpm }}'
+mysql_python_connector_el8_url: '{{ mysql_python_connector_uri }}/{{ mysql_python_connector_el8_rpm }}'
 
 
 # Mysql 5.7

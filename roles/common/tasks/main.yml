@@ -34,7 +34,6 @@
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
 
 
-
 - name: Install Java Connector for Mysql 5.7
   block:
   - name: Acquire the Java Connector
