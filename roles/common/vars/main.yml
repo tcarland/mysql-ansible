@@ -17,25 +17,25 @@ apt_packages:
  - python3-pip
 
 apt_mysql5_server_packages:
- - mysql-client=5.7.32-1ubuntu18.04
+ - mysql-client={{ mysql5_version }}{{ mysql5_deb_version }}
  - mysql-community-server
  - mysql-connector-python
  - python3-mysqldb
 
 apt_mysql5_client_packages:
  - wget
- - mysql-client=5.7.32-1ubuntu18.04
+ - mysql-client={{ mysql5_version }}{{ mysql5_deb_version }}
  - mysql-connector-python
  - python3-mysqldb
 
 apt_mysql8_server_packages:
- - mysql-client=8.0.23-1ubuntu18.04
+ - mysql-client={{ mysql8_version }}{{ mysql8_deb_version}}
  - mysql-community-server
  - mysql-connector-python
  - python3-mysqldb
 
 apt_mysql8_client_packages:
  - wget
- - mysql-client=8.0.23-1ubuntu18.04
+ - mysql-client={{ mysql8_version}}{{ mysql8_deb_version}}
  - mysql-connector-python
  - python3-mysqldb

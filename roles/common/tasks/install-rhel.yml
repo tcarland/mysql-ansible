@@ -8,19 +8,19 @@
       state: absent
   - name: Install Mysql Community Repo (RHEL/CentOS)
     yum:
-      name: '{{ mysql5_community_el7_uri }}'
+      name: '{{ mysql5_el7_uri }}'
       state: present
   - name: Install Client Packages (RHEL/CentOS)
     yum:
       name: '{{ yum_mysql_client_packages }}'
       state: present
   - name: Check for existing package
-    shell: 'rpm -q {{ mysql_python_connector_name }}'
+    shell: 'rpm -q {{ mysql_python_connector }}'
     register: rpmcheck
     failed_when: no
     changed_when: no
   - name: Install Python connector
-    shell: 'rpm -Uh {{ mysql_python_connector_uri }} --nodeps'
+    shell: 'rpm -Uh {{ mysql_python_connector_el7_url }} --nodeps'
     when: rpmcheck.stdout.find('is not installed') != -1
   become: true
   tags: [ server5, client5 ]
@@ -34,19 +34,19 @@
       state: absent
   - name: Install Mysql Community Repo (RHEL/CentOS)
     yum:
-      name: '{{ mysql8_community_el7_uri }}'
+      name: '{{ mysql8_el7_uri }}'
       state: present
   - name: Install Client Packages (RHEL/CentOS)
     yum:
       name: '{{ yum_mysql_client_packages }}'
       state: present
   - name: Check for existing package
-    shell: 'rpm -q {{ mysql_python_connector_name }}'
+    shell: 'rpm -q {{ mysql_python_connector }}'
     register: rpmcheck
     failed_when: no
     changed_when: no
   - name: Install Python connector
-    shell: 'rpm -Uh {{ mysql_python_connector_uri }} --nodeps'
+    shell: 'rpm -Uh {{ mysql_python_connector_el7_url }} --nodeps'
     when: rpmcheck.stdout.find('is not installed') != -1
   become: true
   tags: [ server8, client8 ]
