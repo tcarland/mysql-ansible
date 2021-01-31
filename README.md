@@ -1,13 +1,13 @@
 mysql-ansible
 =============
 
-  Ansible playbook for installing MySQL Community Edition 5.7 on a pair of
+Ansible playbook for installing MySQL Community Edition on a pair of
 hosts in a master-slave replication configuration.
 
-  The *prereqs* role installs the yum packages and configuration, followed
+The *prereqs* role installs the yum packages and configuration, followed
 by the *mysql* role which configures accounts and master-slave replication.
 
-  Inventory follows the ./inventory/$env/hosts convention with the `hosts`
+Inventory follows the ./inventory/$env/hosts convention with the `hosts`
 file defined as:
 ```
 [master]
@@ -72,35 +72,15 @@ version chosen (currently 5.1.46) has been tested with a large number of
 environments and works well with both older MySQL 5.5 and the currently
 deploying MySQL 5.7.  The latter is the preferred version of MySQL most
 compatible with the larger (hadoop) application ecosystem and is still the 
-best version for compatability across many projects (namely Apache Hive).
+best version for compatibility across many projects (namely Apache Hive).
 
 The connector is installed manually, primarily to avoid pulling in RPM
 dependencies that may not be desired by this playbook. Most importantly, 
 we do NOT install the Java JDK from this playbook, which might also occur 
 by trying use the system package repository.
 
-
-- Attempt a secure install, acquiring pw from log
+MySQL 8.0 support has been added via the *server8* and *client8* tags.
 ```
-- name: Enable mysql
-  systemd:
-    name: mysqld
-    state: restarted
-    enabled: yes
-- name: Get root password
-  shell: "grep 'A temporary password is generated for root@localhost' /var/log/mysqld.log | awk -F ' ' '{print $(NF)}'"
-  register: root_password
-- name: Update root password
-  command: mysql --user root --password={{ root_password.stdout }} --connect-expired-password --execute="ALTER USER 'root'@'localhost' IDENTIFIED BY '{{ mysql_root_password }}';"
-- name: Create client users
-  mysql_user:
-    login_user: root
-    login_password: "{{ mysql_root_password }}"
-    name: "{{ item.name }}"
-    password: "{{ item.password }}"
-    priv: '*.*:ALL,GRANT'
-    state: present
-    host: '%'
-  with_items:
-    - "{{ mysql.users }}"
-```
+env="alderwest1"
+./bin/mysqld-install.sh -T server8,client8 run $env
+``` 
