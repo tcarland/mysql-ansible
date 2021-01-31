@@ -5,6 +5,7 @@
     mysql_user:
       login_user: 'root'
       login_password: '{{ mysql_root_password }}'
+      login_unix_socket: '{{ mysql_unix_socket }}'
       name: '{{ mysql_repl_user }}'
       password: '{{ mysql_repl_password }}'
       host: '%'
@@ -14,6 +15,7 @@
     mysql_user:
       login_user: 'root'
       login_password: '{{ mysql_root_password }}'
+      login_unix_socket: '{{ mysql_unix_socket }}'
       name: ""
       host_all: yes
       state: absent
@@ -37,6 +39,7 @@
     mysql_replication:
       login_user: 'root'
       login_password: '{{ mysql_root_password }}'
+      login_unix_socket: '{{ mysql_unix_socket }}'
       mode: getslave
     register: slave_status
   - name: Show Slave Status
@@ -46,6 +49,7 @@
     mysql_replication:
       login_user: 'root'
       login_password: '{{ mysql_root_password }}'
+      login_unix_socket: '{{ mysql_unix_socket }}'
       mode: changemaster
       master_user: '{{ mysql_repl_user }}'
       master_password: '{{ mysql_repl_password }}'
@@ -57,6 +61,7 @@
     mysql_replication:
       login_user: 'root'
       login_password: '{{ mysql_root_password }}'
+      login_unix_socket: '{{ mysql_unix_socket }}'
       mode: startslave
     when: not slave_status.Is_Slave
   tags: [ server5, server8 ]
