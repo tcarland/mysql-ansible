@@ -1,0 +1,60 @@
+---
+# Mysql distribution and version info 
+# These values generally require frequent updating
+# The level of variablization (is that a word?) is pretty annoying and 
+# hard to follow, but it does serve the purpose of being able to tweak 
+# many aspects of repo updates or changes.
+
+mysql_community_uri: 'https://repo.mysql.com/'
+
+mysql_community_deb_pkg: 'mysql-apt-config_0.8.16-1_all.deb'
+mysql_community_deb_md5: 'f6a7c41f04cc4fea7ade285092eea77a'
+
+
+# Java connector
+mysql_connector_path: '/usr/share/java'
+mysql_java_connector: 'mysql-connector-java'
+mysql_java_connector_uri: 'https://dev.mysql.com/get/Downloads/Connector-J'
+
+# Python connector
+mysql_python_connector: 'mysql-connector-python'
+mysql8_python_connector_version: '8.0.23-1'
+
+mysql_python_connector_uri: 'https://dev.mysql.com/get/Downloads/Connector-Python'
+
+mysql_python_connector_name: '{{ mysql_python_connector }}-{{ mysql8_python_connector_version }}'
+mysql_python_connector_el7_rpm: '{{ mysql_python_connector_name }}.el7.x86_64.rpm'
+mysql_python_connector_el8_rpm: '{{ mysql_python_connector_name }}.el8.x86_64.rpm'
+mysql_python_connector_el7_url: '{{ mysql_python_connector_uri }}/{{ mysql_python_connector_el7_rpm }}'
+mysql_python_connector_el8_url: '{{ mysql_python_connector_uri }}/{{ mysql_python_connector_el8_rpm }}'
+
+
+# Mysql 5.7
+mysql5_version: '5.7.33'
+mysql5_java_connector_version: '5.1.46'
+mysql5_deb_version: '-1ubuntu18.04'
+
+mysql5_el7_uri: '{{ mysql_community_uri }}/mysql57-community-release-el7.rpm'
+
+mysql5_java_connector_name: '{{ mysql_java_connector }}-{{ mysql5_java_connector_version }}'
+mysql5_java_connector_jarfile: '{{ mysql5_java_connector_name }}-bin.jar'
+mysql5_java_connector_tarball: '{{ mysql5_java_connector_name }}.tar.gz'
+
+mysql5_java_connector_url: '{{ mysql_java_connector_uri }}/{{ mysql5_java_connector_tarball }}'
+mysql5_java_connector_srcpath: '{{ mysql_tmp_dir }}/{{ mysql5_java_connector_name }}'
+
+
+# Mysql 8.0
+mysql8_version: '8.0.23'
+mysql8_java_connector_version: '8.0.23'
+mysql8_deb_version: '-1ubuntu20.04'
+
+mysql8_el7_uri: 'https://repo.mysql.com/mysql80-community-release-el7.rpm'
+mysql8_el8_uri: 'https://repo.mysql.com/mysql80-community-release-el8.rpm'
+
+mysql8_java_connector_name: '{{ mysql_java_connector }}-{{ mysql8_java_connector_version }}'
+mysql8_java_connector_jarfile: '{{ mysql8_java_connector_name }}.jar'
+mysql8_java_connector_tarball: '{{ mysql8_java_connector_name }}.tar.gz'
+
+mysql8_java_connector_url: '{{ mysql_java_connector_uri }}/{{ mysql8_java_connector_tarball }}'
+mysql8_java_connector_srcpath: '{{ mysql_tmp_dir }}/{{ mysql8_java_connector_name }}'
