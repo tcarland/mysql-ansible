@@ -14,6 +14,7 @@ read_rnd_buffer_size    = 16M
 sort_buffer_size        = 8M
 join_buffer_size        = 8M
 
+bind-address            = 0.0.0.0
 max_connections         = {{ mysql_max_connections }}
 
 default-storage-engine  = innodb
@@ -29,7 +30,7 @@ server-id={{ mysql_server_id }}
 symbolic-links = 0
 
 datadir={{ mysql_data_dir }}
-socket=/var/lib/mysql/mysql.sock
+socket=/var/run/mysqld/mysqld.sock
 
 # InnoDB settings
 innodb_file_format                  = Barracuda

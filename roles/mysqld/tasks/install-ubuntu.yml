@@ -46,7 +46,7 @@
 - name: Set Master Config
   template:
     src: mysqld.cnf
-    dest: /etc/mysql/conf.d/mysqld.cnf
+    dest: /etc/mysql/mysql.conf.d/mysqld.cnf
   vars:
     mysql_server_id: 1
   become: true
