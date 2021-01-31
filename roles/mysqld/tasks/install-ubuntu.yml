@@ -30,13 +30,13 @@
     lineinfile:
       dest: '/etc/apparmor.d/usr.sbin.mysqld'
       regexp: '  /var/lib/mysql/ r,'
-      line: '  {{ mysql_data_dir }}/ r'
+      line: '  {{ mysql_data_dir }}/ r,'
       backup: no
   - name: Update AppArmor data dir access pt.2
     lineinfile:
       dest: '/etc/apparmor.d/usr.sbin.mysqld'
       regexp: '  /var/lib/mysql/\*\* rwk,'
-      line: '  {{ mysql_data_dir }}/** rwk'
+      line: '  {{ mysql_data_dir }}/** rwk,'
       backup: no
     notify: restart_apparmor
   become: true
