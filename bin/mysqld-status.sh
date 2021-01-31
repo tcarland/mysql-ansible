@@ -1,12 +1,15 @@
 #!/usr/bin/env bash
 #
 env="$1"
+usage="
+Displays MySQL Master/Slave Replication status.
+
+Usage: $0 <env_name>
+ where 'env_name' is the ansible inventory name under '.inventory'
+"
 
 if [ -z "$env" ]; then
-    echo "Displays MySQL Master and Slave Status."
-    echo ""
-    echo "Usage: $0 <env>"
-    echo " where 'env' is the ansible inventory name under ./inventory"
+    echo "$usage"
     exit 0
 fi
 

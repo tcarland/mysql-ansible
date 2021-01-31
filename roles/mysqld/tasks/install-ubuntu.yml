@@ -1,17 +1,17 @@
 ---
 - name: Install Packages (Debian/Ubuntu)
   yum:
-    name: '{{ apt_mysql_server_packages }}'
+    name: '{{ apt_mysql5_server_packages }}'
     state: present
   become: true
-  tags: [ server ]
+  tags: [ server5 ]
 
 - name: Stop Mysqld
   service:
     name: 'mysql'
     state: 'stopped'
   become: true
-  tags: [ server ]
+  tags: [ server5, server8 ]
 
 - name: Reset mysqld state
   block:
@@ -30,28 +30,28 @@
     lineinfile:
       dest: '/etc/apparmor.d/usr.sbin.mysqld'
       regexp: '  /var/lib/mysql/ r,'
-      line: '  {{ mysql_data_dir }}/ r'
+      line: '  {{ mysql_data_dir }}/ r,'
       backup: no
   - name: Update AppArmor data dir access pt.2
     lineinfile:
       dest: '/etc/apparmor.d/usr.sbin.mysqld'
       regexp: '  /var/lib/mysql/\*\* rwk,'
-      line: '  {{ mysql_data_dir }}/** rwk'
+      line: '  {{ mysql_data_dir }}/** rwk,'
       backup: no
     notify: restart_apparmor
   become: true
-  tags: [ init, server ]
+  tags: [ init, server5, server8 ]
   when: mystat.stat.exists == false
 
 - name: Set Master Config
   template:
     src: mysqld.cnf
-    dest: /etc/mysql/conf.d/mysqld.cnf
+    dest: /etc/mysql/mysql.conf.d/mysqld.cnf
   vars:
     mysql_server_id: 1
   become: true
   when: inventory_hostname in groups['master']
-  tags: [ server ]
+  tags: [ server5, server8 ]
 
 - name: Set Slave Config
   template:
@@ -61,9 +61,9 @@
     mysql_server_id: 2
   become: true
   when: inventory_hostname in groups['slave']
-  tags: [ server ]
+  tags: [ server5, server8 ]
 
-- name: Initialize MySQLd
+- name: Initialize mysqld
   block:
   - name: Initialize mysql
     shell: 'mysqld --initialize-insecure --user=mysql'
@@ -75,23 +75,24 @@
   - name: Set root password
     shell: "mysql -u root --skip-password -e \"ALTER USER root@localhost IDENTIFIED BY '{{ mysql_root_password }}'\""
   become: true
-  tags: [ init, server ]
+  tags: [ init, server5, server8 ]
   when: mystat.stat.exists == false
 
-- name: Set ~/my.cnf
+- name: Set my.cnf
   template:
     src: mypw.cnf
     dest: .my.cnf
-  tags: [ server ]
+  tags: [ server5, server8 ]
 
 - name: Mysql Root accounts
   mysql_user:
     login_user: 'root'
     login_password: '{{ mysql_root_password }}'
+    login_unix_socket: '{{ mysql_unix_socket }}'
     name: 'root'
     password: '{{ mysql_root_password }}'
     host: '{{ item }}'
     priv: '*.*:ALL,GRANT'
     state: present
   with_items: '{{ mysql_master_hosts }}'
-  tags: [ server ]
+  tags: [ server5, server8 ]
