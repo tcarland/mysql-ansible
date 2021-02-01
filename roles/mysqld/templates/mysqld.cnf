@@ -14,7 +14,7 @@ read_rnd_buffer_size    = 16M
 sort_buffer_size        = 8M
 join_buffer_size        = 8M
 
-bind-address            = 0.0.0.0
+bind-address            = {{ mysql_bind_address }}
 max_connections         = {{ mysql_max_connections }}
 
 default-storage-engine  = innodb

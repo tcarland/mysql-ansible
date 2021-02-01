@@ -9,8 +9,9 @@ mysql_master_hosts:
   - '{{ mysql_master_hostname }}'
   - '{{ mysql_slave_hostname }}'
 
-# BINLOG Format 
-# MIXED, ROW, or STATEMENT (first two is typical)
+mysql_bind_address: '0.0.0.0'
+
+# BINLOG Format - MIXED, ROW, or STATEMENT (first two is typical)
 mysql_binlog_format: 'MIXED'
 mysql_max_connections: '550'
 
