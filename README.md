@@ -5,7 +5,9 @@ Ansible playbook for installing MySQL Community Edition on a pair of
 hosts in a master-slave replication configuration.
 
 The *prereqs* role installs the yum packages and configuration, followed
-by the *mysql* role which configures accounts and master-slave replication.
+by the *mysqld* role which configures accounts and master-slave replication.
+
+## Inventory Configuration
 
 Inventory follows the ./inventory/$env/hosts convention with the `hosts`
 file defined as:
@@ -60,14 +62,19 @@ mysql_root_password: 'myrootpw'
 mysql_repl_password: 'myreplpw'
 ```
 
+# Clients group and version tags
+
 The inventory also supports a `clients` group for installing just the
 mysql client libraries and the MySQL JDBC Connector.  The wrapper
 script `mysql-client-install.sh` runs the install yaml with the
-supported `client` tag to limit the playbook run to client only install.
+supported `client5` tag to limit the playbook run as client install only.
+
+The *server5* and *client5* tags specifically refer to and install MySQL
+verion 5.7.x and is the default for an install.
 
 Note that the client role installs a specific version of the MySQL Java
 Connector manually.  First, not all versions of the mysql connector are equal
-and there are absolutely compatibility issues with different versions. The
+and there are certainly compatibility issues with different versions. The
 version chosen (currently 5.1.46) has been tested with a large number of
 environments and works well with both older MySQL 5.5 and the currently
 deploying MySQL 5.7.  The latter is the preferred version of MySQL most
@@ -75,12 +82,18 @@ compatible with the larger (hadoop) application ecosystem and is still the
 best version for compatibility across many projects (namely Apache Hive).
 
 The connector is installed manually, primarily to avoid pulling in RPM
-dependencies that may not be desired by this playbook. Most importantly, 
-we do NOT install the Java JDK from this playbook, which might also occur 
-by trying use the system package repository.
+dependencies that may not be desired by this playbook (namely a JDK). 
+Notably, this playbook specifically does NOT install the Java JDK since 
+it cannot predict the required JDK version.
 
 MySQL 8.0 support has been added via the *server8* and *client8* tags.
 ```
 env="alderwest1"
 ./bin/mysqld-install.sh -T server8,client8 run $env
-``` 
+```
+
+## Mysql Distribution and Version info.
+
+The MySQL community repository configuration and related package version 
+is defined by the defaults file *roles/common/defaults/main.yml*. This 
+requires regular adjustments as new releases are made.
