@@ -13,19 +13,19 @@ env=
 
 usage="
 Wrapper script to the ansible-playbook 'mysqld-install' for 
-a given environment. By default this install MySQL 5.7, but 
-an install for mysql 8.0 can be set by passing 'server,client8' 
+a given environment. By defaultm this installs MySQL 5.7, but 
+mysql 8.0 can be set by passing the 'server8,client8' 
 tags to the playbook via the '--tags' option.
 
 Synopsis:
   $PNAME <action> <env>
 
 Options:
-  -g|--group       :  Set a host 'limit' group for the run.
-  -h|--help        :  Show usage info and exit.
-  -T|--tags <tags> :  Set tags to control install version. 
-  -v|--verbose     :  Set increased verbosity in ansible.
-  -V|--version     :  Show version info and exit.
+  -g|--group       : Set a host 'limit' group for the run.
+  -h|--help        : Show usage info and exit.
+  -T|--tags <tags> : Set tags to control install version. 
+  -v|--verbose     : Set increased verbosity in ansible.
+  -V|--version     : Show version info and exit.
 
   <action> : any action other than 'run' is a 'dryrun'
   <env>    : is the ansible inventory name (under ./inventory)
