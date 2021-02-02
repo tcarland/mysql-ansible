@@ -11,6 +11,7 @@ mysql_community_deb_pkg: 'mysql-apt-config_0.8.16-1_all.deb'
 mysql_community_deb_md5: 'f6a7c41f04cc4fea7ade285092eea77a'
 
 mysql_unix_socket: '/var/run/mysqld/mysqld.sock'
+mysql_bind_address: '0.0.0.0'
 
 
 # Java connector
@@ -29,6 +30,8 @@ mysql_python_connector_el7_rpm: '{{ mysql_python_connector_name }}.el7.x86_64.rp
 mysql_python_connector_el8_rpm: '{{ mysql_python_connector_name }}.el8.x86_64.rpm'
 mysql_python_connector_el7_url: '{{ mysql_python_connector_uri }}/{{ mysql_python_connector_el7_rpm }}'
 mysql_python_connector_el8_url: '{{ mysql_python_connector_uri }}/{{ mysql_python_connector_el8_rpm }}'
+
+mysql_python_connector_deb: '{{ mysql_python_connector_uri }}/{{ mysql_python_connector }}-py3_{{ mysql8_python_connector_version }}ubuntu20.04_amd64.deb'
 
 
 # Mysql 5.7

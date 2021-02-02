@@ -2,7 +2,7 @@
 #
 #
 PNAME=${0##*\/}
-MYSQL_ANSIBLE_VERSION="v21.01"
+MYSQL_ANSIBLE_VERSION="v21.02"
 
 playbook="mysqld-install.yml"
 tags="server5,client5"
@@ -12,11 +12,26 @@ env=
 # -------------------
 
 usage="
-Usage: $PNAME <action> <env>
+Script to run the ansible-playbook 'mysqld-install' for 
+a given environment. 
+
+By default the playbook installs MySQL 5.7 by using the 
+tags 'server5,client5', but MySQL 8.0 can be selected by 
+passing the 'server8,client8' tags via the '--tags' option.
+
+Synopsis:
+  $PNAME <action> <env>
+
+Options:
+  -g|--group       : Set a host 'limit' group for the run.
+  -h|--help        : Show usage info and exit.
+  -T|--tags <tags> : Set tags to control install version. 
+  -v|--verbose     : Set increased verbosity in ansible.
+  -V|--version     : Show version info and exit.
+
   <action> : any action other than 'run' is a 'dryrun'
   <env>    : is the ansible inventory name (under ./inventory)
 "
-
 version="$PNAME (mysql-ansible) $MYSQL_ANSIBLE_VERSION"
 
 # -------------------

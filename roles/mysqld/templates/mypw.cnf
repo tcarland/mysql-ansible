@@ -1,12 +1,12 @@
 [mysql]
 user=root
 password={{ mysql_root_password }}
-socket=/var/run/mysqld/mysqld.sock
+socket={{ mysql_unix_socket }}
 [mysqladmin]
 user=root
 password={{ mysql_root_password }}
-socket=/var/run/mysqld/mysqld.sock
+socket={{ mysql_unix_socket }}
 [mysqldump]
 user=root
 password={{ mysql_root_password }}
-socket=/var/run/mysqld/mysqld.sock
+socket={{ mysql_unix_socket }}

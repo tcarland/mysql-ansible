@@ -1,5 +1,5 @@
 ---
-- name: Install Packages (RHEL/CentOS)
+- name: Install MySQL Server Packages (RHEL/CentOS)
   yum:
     name: '{{ yum_mysql_server_packages }}'
     state: present
@@ -7,7 +7,7 @@
   tags: [ server5, server8 ]
   when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
 
-- name: Set Master Config
+- name: Set Master Config 5.7
   template:
     src: mysqld.cnf
     dest: /etc/my.cnf
@@ -15,9 +15,19 @@
     mysql_server_id: 1
   become: true
   when: inventory_hostname in groups['master']
-  tags: [ server5, server8 ]
+  tags: [ server5 ]
 
-- name: Set Slave Config
+- name: Set Master Config 8.0
+  template:
+    src: mysqld8.cnf
+    dest: /etc/my.cnf
+  vars:
+    mysql_server_id: 1
+  become: true
+  when: inventory_hostname in groups['master']
+  tags: [ server8 ]
+
+- name: Set Slave Config 5.7
   template:
     src: mysqld.cnf
     dest: /etc/my.cnf
@@ -25,7 +35,17 @@
     mysql_server_id: 2
   become: true
   when: inventory_hostname in groups['slave']
-  tags: [ server5, server8 ]
+  tags: [ server5 ]
+
+- name: Set Slave Config 8.0
+  template:
+    src: mysqld8.cnf
+    dest: /etc/my.cnf
+  vars:
+    mysql_server_id: 2
+  become: true
+  when: inventory_hostname in groups['slave']
+  tags: [ server8 ]
 
 - name: Initialize and Start Mysqld
   block:
@@ -44,7 +64,7 @@
   tags: [ server5, server8 ]
   when: mystat.stat.exists == false
 
-- name: Set my.cnf
+- name: Set my.cnf password file
   template:
     src: mypw.cnf
     dest: .my.cnf

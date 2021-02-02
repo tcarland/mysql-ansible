@@ -1,10 +1,17 @@
 ---
-- name: Install Packages (Debian/Ubuntu)
+- name: Install MySQL 5.7 Server Packages (Debian/Ubuntu)
   yum:
     name: '{{ apt_mysql5_server_packages }}'
     state: present
   become: true
   tags: [ server5 ]
+
+- name: Install MySQL 8.0 Server Packages (Debian/Ubuntu)
+  yum:
+    name: '{{ apt_mysql8_server_packages }}'
+    state: present
+  become: true
+  tags: [ server8 ]
 
 - name: Stop Mysqld
   service:
@@ -40,10 +47,10 @@
       backup: no
     notify: restart_apparmor
   become: true
-  tags: [ init, server5, server8 ]
+  tags: [ server5, server8 ]
   when: mystat.stat.exists == false
 
-- name: Set Master Config
+- name: Set Master Config 5.7
   template:
     src: mysqld.cnf
     dest: /etc/mysql/mysql.conf.d/mysqld.cnf
@@ -51,9 +58,19 @@
     mysql_server_id: 1
   become: true
   when: inventory_hostname in groups['master']
-  tags: [ server5, server8 ]
+  tags: [ server5 ]
 
-- name: Set Slave Config
+- name: Set Master Config 8.0
+  template:
+    src: mysqld8.cnf
+    dest: /etc/mysql/mysql.conf.d/mysqld.cnf
+  vars:
+    mysql_server_id: 1
+  become: true
+  when: inventory_hostname in groups['master']
+  tags: [ server8 ]
+
+- name: Set Slave Config 5.7
   template:
     src: mysqld.cnf
     dest: /etc/mysql/conf.d/mysqld.cnf
@@ -61,7 +78,17 @@
     mysql_server_id: 2
   become: true
   when: inventory_hostname in groups['slave']
-  tags: [ server5, server8 ]
+  tags: [ server5 ]
+
+- name: Set Slave Config 8.0
+  template:
+    src: mysqld8.cnf
+    dest: /etc/mysql/conf.d/mysqld.cnf
+  vars:
+    mysql_server_id: 2
+  become: true
+  when: inventory_hostname in groups['slave']
+  tags: [ server8 ]
 
 - name: Initialize mysqld
   block:
@@ -75,10 +102,10 @@
   - name: Set root password
     shell: "mysql -u root --skip-password -e \"ALTER USER root@localhost IDENTIFIED BY '{{ mysql_root_password }}'\""
   become: true
-  tags: [ init, server5, server8 ]
+  tags: [ server5, server8 ]
   when: mystat.stat.exists == false
 
-- name: Set my.cnf
+- name: Set my.cnf password file
   template:
     src: mypw.cnf
     dest: .my.cnf
