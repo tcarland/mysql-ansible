@@ -12,10 +12,12 @@ env=
 # -------------------
 
 usage="
-Wrapper script to the ansible-playbook 'mysqld-install' for 
-a given environment. By defaultm this installs MySQL 5.7, but 
-mysql 8.0 can be set by passing the 'server8,client8' 
-tags to the playbook via the '--tags' option.
+Script to run the ansible-playbook 'mysqld-install' for 
+a given environment. 
+
+By default the playbook installs MySQL 5.7 by using the 
+tags 'server5,client5', but MySQL 8.0 can be selected by 
+passing the 'server8,client8' tags via the '--tags' option.
 
 Synopsis:
   $PNAME <action> <env>
