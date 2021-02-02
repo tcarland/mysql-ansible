@@ -46,6 +46,8 @@ mysql_master_hosts:
   - '{{ mysql_master_hostname }}'
   - '{{ mysql_slave_hostname }}'
 
+mysql_bind_address: '0.0.0.0'
+
 mysql_binlog_format: 'MIXED'
 mysql_max_connections: '350'
 
@@ -62,7 +64,7 @@ mysql_root_password: 'myrootpw'
 mysql_repl_password: 'myreplpw'
 ```
 
-# Clients group and version tags
+# MySQL Clients 
 
 The inventory also supports a `clients` group for installing just the
 mysql client libraries and the MySQL JDBC Connector.  The wrapper
@@ -72,9 +74,9 @@ supported `client5` tag to limit the playbook run as client install only.
 The *server5* and *client5* tags specifically refer to and install MySQL
 verion 5.7.x and is the default for an install.
 
-Note that the client role installs a specific version of the MySQL Java
-Connector manually.  First, not all versions of the mysql connector are equal
-and there are certainly compatibility issues with different versions. The
+Note that the *client* role performs a manual install of the MySQL Java
+Connector.  First, not all versions of the mysql connector are equal
+and there are compatibility issues with different versions. The
 version chosen (currently 5.1.46) has been tested with a large number of
 environments and works well with both older MySQL 5.5 and the currently
 deploying MySQL 5.7.  The latter is the preferred version of MySQL most
