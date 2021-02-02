@@ -1,11 +1,11 @@
 ---
 - name: Install Mysql 5.7 Community Repository (Debian/Ubuntu)
   block:
-  - name: Install apt prereqs
+  - name: Install prereqs (Debian/Ubuntu)
     apt:
       name: '{{ apt_packages }}'
       state: present
-  - name: Set apt source
+  - name: Set apt source file
     copy:
       src: 'mysql5.list'
       dest: '/etc/apt/sources.list.d/mysql.list'
@@ -14,11 +14,14 @@
     apt_key:
       data: "{{ lookup('file', 'mysql.gpg') }}"
       state: present
-  - name: Install Client Packages (Debian/Ubuntu)
+  - name: Install MySQL 5.7 Client Packages (Debian/Ubuntu)
     apt:
       name: '{{ apt_mysql5_client_packages }}'
       update_cache: yes
       state: present
+  - name: Install MySQL Python Connector (Debian/Ubuntu)
+    apt:
+      deb: '{{ mysql_python_connector_deb }}'
   - name: Install python3 mysql package
     pip:
       name: 'PyMySQL'
@@ -27,13 +30,13 @@
   tags: [ server5, client5 ]
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
 
-- name: Install Mysql 8.0 Community Repository (Debian/Ubuntu)
+- name: Install MySQL 8.0 Community Repository (Debian/Ubuntu)
   block:
-  - name: Install apt prereqs
+  - name: Install apt prereqs (Debian/Ubuntu)
     apt:
       name: '{{ apt_packages }}'
       state: present
-  - name: Set apt source
+  - name: Configure apt source file
     copy:
       src: 'mysql8.list'
       dest: '/etc/apt/sources.list.d/mysql.list'
@@ -42,7 +45,7 @@
     apt_key:
       data: "{{ lookup('file', 'mysql.gpg') }}"
       state: present
-  - name: Install Client Packages (Debian/Ubuntu)
+  - name: Install MySQL 8.0 Client Packages (Debian/Ubuntu)
     apt:
       name: '{{ apt_mysql8_client_packages }}'
       update_cache: yes

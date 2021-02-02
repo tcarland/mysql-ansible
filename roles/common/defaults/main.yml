@@ -30,6 +30,7 @@ mysql_python_connector_el8_rpm: '{{ mysql_python_connector_name }}.el8.x86_64.rp
 mysql_python_connector_el7_url: '{{ mysql_python_connector_uri }}/{{ mysql_python_connector_el7_rpm }}'
 mysql_python_connector_el8_url: '{{ mysql_python_connector_uri }}/{{ mysql_python_connector_el8_rpm }}'
 
+mysql_python_connector_deb: '{{ mysql_python_connector_uri }}/{{ mysql_python_connector }}-py3_{{ mysql8_python_connector_version }}ubuntu20.04_amd64.deb'
 
 # Mysql 5.7
 mysql5_version: '5.7.33'
