@@ -25,7 +25,7 @@ max_binlog_size = 500M
 server-id={{ mysql_server_id }}
 
 datadir={{ mysql_data_dir }}
-socket=/var/run/mysqld/mysqld.sock
+socket={{ mysql_unix_socket }}
 
 # InnoDB settings
 innodb_file_per_table               = 1
