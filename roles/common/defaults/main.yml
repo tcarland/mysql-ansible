@@ -35,7 +35,7 @@ mysql_python_connector_deb: '{{ mysql_python_connector_uri }}/{{ mysql_python_co
 
 
 # Mysql 5.7
-mysql5_version: '5.7.33'
+mysql5_version: '5.7.34'
 mysql5_java_connector_version: '5.1.46'
 mysql5_deb_version: '-1ubuntu18.04'
 
@@ -50,7 +50,7 @@ mysql5_java_connector_srcpath: '{{ mysql_tmp_dir }}/{{ mysql5_java_connector_nam
 
 
 # Mysql 8.0
-mysql8_version: '8.0.23'
+mysql8_version: '8.0.25'
 mysql8_java_connector_version: '8.0.23'
 mysql8_deb_version: '-1ubuntu20.04'
 
