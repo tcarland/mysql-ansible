@@ -19,13 +19,11 @@ apt_packages:
 apt_mysql5_server_packages:
  - mysql-client={{ mysql5_version }}{{ mysql5_deb_version }}
  - mysql-community-server
- - mysql-connector-python
  - python3-mysqldb
 
 apt_mysql5_client_packages:
  - wget
  - mysql-client={{ mysql5_version }}{{ mysql5_deb_version }}
- - mysql-connector-python
  - python3-mysqldb
 
 apt_mysql8_server_packages:
