@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
 #
+# mysqld-install.sh provides a simple wrapper to ansible-playbook
+# allowing for defining the correct tags for the corresponding 
+# mysql versions
 #
 PNAME=${0##*\/}
-MYSQL_ANSIBLE_VERSION="v21.07"
+MYSQL_ANSIBLE_VERSION="v21.08"
 
 playbook="mysqld-install.yml"
 tags="server5,client5"
