@@ -1,2 +1,2 @@
-deb http://repo.mysql.com/apt/ubuntu/ bionic mysql-5.7
-deb http://repo.mysql.com/apt/ubuntu/ bionic mysql-tools
+deb https://repo.mysql.com/apt/ubuntu/ bionic mysql-5.7
+deb https://repo.mysql.com/apt/ubuntu/ bionic mysql-tools
