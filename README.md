@@ -99,3 +99,6 @@ env="alderwest1"
 The MySQL community repository configuration and related package version 
 is defined by the defaults file *roles/common/defaults/main.yml*. This 
 requires regular adjustments as new releases are made.
+
+https://repo.mysql.com/apt/ubuntu/pool/mysql-5.7/m/mysql-community/
+https://repo.mysql.com/apt/ubuntu/pool/mysql-8.0/m/mysql-community/
