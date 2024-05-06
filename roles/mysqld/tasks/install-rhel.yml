@@ -1,77 +1,77 @@
 ---
 - name: Install MySQL Server Packages (RHEL/CentOS)
-  yum:
-    name: '{{ yum_mysql_server_packages }}'
-    state: present
   become: true
   tags: [ server5, server8 ]
-  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+  ansible.builtin.yum:
+    name: '{{ common_yum_mysql_server_packages }}'
+    state: present
 
 - name: Set Master Config 5.7
-  template:
+  become: true
+  when: inventory_hostname in groups['master']
+  tags: [ server5 ]
+  ansible.builtin.template:
     src: mysqld.cnf
     dest: /etc/my.cnf
   vars:
     mysql_server_id: 1
-  become: true
-  when: inventory_hostname in groups['master']
-  tags: [ server5 ]
 
 - name: Set Master Config 8.0
-  template:
+  become: true
+  when: inventory_hostname in groups['master']
+  tags: [ server8 ]
+  ansible.builtin.template:
     src: mysqld8.cnf
     dest: /etc/my.cnf
   vars:
     mysql_server_id: 1
-  become: true
-  when: inventory_hostname in groups['master']
-  tags: [ server8 ]
 
 - name: Set Slave Config 5.7
-  template:
+  become: true
+  when: inventory_hostname in groups['slave']
+  tags: [ server5 ]
+  ansible.builtin.template:
     src: mysqld.cnf
     dest: /etc/my.cnf
   vars:
     mysql_server_id: 2
-  become: true
-  when: inventory_hostname in groups['slave']
-  tags: [ server5 ]
 
 - name: Set Slave Config 8.0
-  template:
+  become: true
+  when: inventory_hostname in groups['slave']
+  tags: [ server8 ]
+  ansible.builtin.template:
     src: mysqld8.cnf
     dest: /etc/my.cnf
   vars:
     mysql_server_id: 2
-  become: true
-  when: inventory_hostname in groups['slave']
-  tags: [ server8 ]
 
 - name: Initialize and Start Mysqld
-  block:
-  - name: Initialize mysql
-    become: true
-    shell: 'mysqld --initialize-insecure --user=mysql'
-  - name: Start mysqld (RHEL/CentOS)
-    become: true
-    service:
-      name: 'mysqld'
-      state: 'started'
-      enabled: 'yes'
-  - name: Set root password
-    become: true
-    shell: "mysql -u root --skip-password -e \"ALTER USER root@localhost IDENTIFIED BY '{{ mysql_root_password }}'\""
   tags: [ server5, server8 ]
-  when: mystat.stat.exists == false
+  when: not mystat.stat.exists
+  block:
+    - name: Initialize mysql
+      become: true
+      ansible.builtin.shell: 'mysqld --initialize-insecure --user=mysql'
+    - name: Start mysqld (RHEL/CentOS)
+      become: true
+      ansible.builtin.service:
+        name: 'mysqld'
+        state: 'started'
+        enabled: 'yes'
+    - name: Set root password
+      become: true
+      ansible.builtin.shell: "mysql -u root --skip-password -e \"ALTER USER root@localhost IDENTIFIED BY '{{ mysql_root_password }}'\""
 
 - name: Set my.cnf password file
-  template:
+  tags: [ server5, server8 ]
+  ansible.builtin.template:
     src: mypw.cnf
     dest: .my.cnf
-  tags: [ server5, server8 ]
 
 - name: Mysql Root accounts
-  mysql_user:
+  tags: [ server5, server8 ]
+  community.mysql.mysql_user:
     login_user: 'root'
     login_password: '{{ mysql_root_password }}'
     login_unix_socket: '{{ mysql_unix_socket }}'
@@ -81,4 +81,3 @@
     priv: '*.*:ALL,GRANT'
     state: present
   with_items: '{{ mysql_master_hosts }}'
-  tags: [ server5, server8 ]

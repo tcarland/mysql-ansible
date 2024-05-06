@@ -5,7 +5,7 @@
 # mysql versions
 #
 PNAME=${0##*\/}
-MYSQL_ANSIBLE_VERSION="v22.02"
+MYSQL_ANSIBLE_VERSION="v24.02"
 
 playbook="mysqld-install.yml"
 tags="server5,client5"

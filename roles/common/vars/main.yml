@@ -1,37 +1,36 @@
 ---
+common_yum_remove_packages:
+  - mariadb-libs
 
-yum_remove_packages:
- - mariadb-libs
+common_yum_mysql_server_packages:
+  - mysql-community-server
+  - MySQL-python
 
-yum_mysql_server_packages:
- - mysql-community-server
- - MySQL-python
+common_yum_mysql_client_packages:
+  - wget
+  - mysql-community-libs
+  - mysql-community-client
 
-yum_mysql_client_packages:
- - wget
- - mysql-community-libs
- - mysql-community-client
+common_apt_packages:
+  - xz-utils
+  - python3-pip
 
-apt_packages:
- - xz-utils
- - python3-pip
+common_apt_mysql5_server_packages:
+  - mysql-client={{ mysql5_version }}{{ mysql5_deb_version }}
+  - mysql-community-server
+  - python3-mysqldb
 
-apt_mysql5_server_packages:
- - mysql-client={{ mysql5_version }}{{ mysql5_deb_version }}
- - mysql-community-server
- - python3-mysqldb
+common_apt_mysql5_client_packages:
+  - wget
+  - mysql-client={{ mysql5_version }}{{ mysql5_deb_version }}
+  - python3-mysqldb
 
-apt_mysql5_client_packages:
- - wget
- - mysql-client={{ mysql5_version }}{{ mysql5_deb_version }}
- - python3-mysqldb
+common_apt_mysql8_server_packages:
+  - mysql-client={{ mysql8_version }}{{ mysql8_deb_version}}
+  - mysql-community-server
+  - python3-mysqldb
 
-apt_mysql8_server_packages:
- - mysql-client={{ mysql8_version }}{{ mysql8_deb_version}}
- - mysql-community-server
- - python3-mysqldb
-
-apt_mysql8_client_packages:
- - wget
- - mysql-client={{ mysql8_version}}{{ mysql8_deb_version}}
- - python3-mysqldb
+common_apt_mysql8_client_packages:
+  - wget
+  - mysql-client={{ mysql8_version}}{{ mysql8_deb_version}}
+  - python3-mysqldb

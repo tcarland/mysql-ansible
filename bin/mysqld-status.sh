@@ -2,7 +2,7 @@
 #
 env="$1"
 usage="
-Displays MySQL Master/Slave Replication status.
+Displays MySQL Primary/Replica Replication status.
 
 Usage: $0 <env_name>
  where 'env_name' is the ansible inventory name under '.inventory'

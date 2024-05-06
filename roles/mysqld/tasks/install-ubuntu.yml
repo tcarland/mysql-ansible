@@ -1,118 +1,119 @@
 ---
 - name: Install MySQL 5.7 Server Packages (Debian/Ubuntu)
-  yum:
-    name: '{{ apt_mysql5_server_packages }}'
-    state: present
   become: true
   tags: [ server5 ]
+  ansible.builtin.apt:
+    name: '{{ common_apt_mysql5_server_packages }}'
+    state: present
 
 - name: Install MySQL 8.0 Server Packages (Debian/Ubuntu)
-  yum:
-    name: '{{ apt_mysql8_server_packages }}'
-    state: present
   become: true
   tags: [ server8 ]
+  ansible.builtin.apt:
+    name: '{{ common_apt_mysql8_server_packages }}'
+    state: present
 
 - name: Stop Mysqld
-  service:
+  become: true
+  tags: [ server5, server8 ]
+  ansible.builtin.service:
     name: 'mysql'
     state: 'stopped'
-  become: true
-  tags: [ server5, server8 ]
 
 - name: Reset mysqld state
-  block:
-  - name: Remove existing db state
-    file:
-      path: '/var/lib/mysql'
-      state: absent
-  - name: Recreate mysqld data dir
-    file:
-      path: '{{ mysql_data_dir }}'
-      owner: 'mysql'
-      group: 'mysql'
-      mode: 0750
-      state: directory
-  - name: Update AppArmor data dir access pt.1
-    lineinfile:
-      dest: '/etc/apparmor.d/usr.sbin.mysqld'
-      regexp: '  /var/lib/mysql/ r,'
-      line: '  {{ mysql_data_dir }}/ r,'
-      backup: no
-  - name: Update AppArmor data dir access pt.2
-    lineinfile:
-      dest: '/etc/apparmor.d/usr.sbin.mysqld'
-      regexp: '  /var/lib/mysql/\*\* rwk,'
-      line: '  {{ mysql_data_dir }}/** rwk,'
-      backup: no
-    notify: restart_apparmor
   become: true
   tags: [ server5, server8 ]
-  when: mystat.stat.exists == false
+  when: not mystat.stat.exists
+  block:
+    - name: Remove existing db state
+      ansible.builtin.file:
+        path: '/var/lib/mysql'
+        state: absent
+    - name: Recreate mysqld data dir
+      ansible.builtin.file:
+        path: '{{ mysql_data_dir }}'
+        owner: 'mysql'
+        group: 'mysql'
+        mode: '0750'
+        state: directory
+    - name: Update AppArmor data dir access pt.1
+      ansible.builtin.lineinfile:
+        dest: '/etc/apparmor.d/usr.sbin.mysqld'
+        regexp: '  /var/lib/mysql/ r,'
+        line: '  {{ mysql_data_dir }}/ r,'
+        backup: false
+    - name: Update AppArmor data dir access pt.2
+      ansible.builtin.lineinfile:
+        dest: '/etc/apparmor.d/usr.sbin.mysqld'
+        regexp: '  /var/lib/mysql/\*\* rwk,'
+        line: '  {{ mysql_data_dir }}/** rwk,'
+        backup: false
+      notify: restart_apparmor
 
 - name: Set Master Config 5.7
-  template:
+  become: true
+  when: inventory_hostname in groups['master']
+  tags: [ server5 ]
+  ansible.builtin.template:
     src: mysqld.cnf
     dest: /etc/mysql/mysql.conf.d/mysqld.cnf
   vars:
     mysql_server_id: 1
-  become: true
-  when: inventory_hostname in groups['master']
-  tags: [ server5 ]
 
 - name: Set Master Config 8.0
-  template:
+  become: true
+  when: inventory_hostname in groups['master']
+  tags: [ server8 ]
+  ansible.builtin.template:
     src: mysqld8.cnf
     dest: /etc/mysql/mysql.conf.d/mysqld.cnf
   vars:
     mysql_server_id: 1
-  become: true
-  when: inventory_hostname in groups['master']
-  tags: [ server8 ]
 
 - name: Set Slave Config 5.7
-  template:
+  become: true
+  when: inventory_hostname in groups['slave']
+  tags: [ server5 ]
+  ansible.builtin.template:
     src: mysqld.cnf
     dest: /etc/mysql/conf.d/mysqld.cnf
   vars:
     mysql_server_id: 2
-  become: true
-  when: inventory_hostname in groups['slave']
-  tags: [ server5 ]
 
 - name: Set Slave Config 8.0
-  template:
+  become: true
+  when: inventory_hostname in groups['slave']
+  tags: [ server8 ]
+  ansible.builtin.template:
     src: mysqld8.cnf
     dest: /etc/mysql/conf.d/mysqld.cnf
   vars:
     mysql_server_id: 2
-  become: true
-  when: inventory_hostname in groups['slave']
-  tags: [ server8 ]
 
 - name: Initialize mysqld
-  block:
-  - name: Initialize mysql
-    shell: 'mysqld --initialize-insecure --user=mysql'
-  - name: Start mysqld (Debian/Ubuntu)
-    service:
-      name: 'mysql'
-      state: 'started'
-      enabled: 'yes'
-  - name: Set root password
-    shell: "mysql -u root --skip-password -e \"ALTER USER root@localhost IDENTIFIED BY '{{ mysql_root_password }}'\""
   become: true
   tags: [ server5, server8 ]
   when: mystat.stat.exists == false
+  block:
+    - name: Initialize mysql
+      ansible.builtin.shell: 'mysqld --initialize-insecure --user=mysql'
+    - name: Start mysqld (Debian/Ubuntu)
+      ansible.builtin.service:
+        name: 'mysql'
+        state: 'started'
+        enabled: true
+    - name: Set root password
+      ansible.builtin.shell: "mysql -u root --skip-password -e \"ALTER USER root@localhost IDENTIFIED BY '{{ mysql_root_password }}'\""
 
 - name: Set my.cnf password file
-  template:
+  tags: [ server5, server8 ]
+  ansible.builtin.template:
     src: mypw.cnf
     dest: .my.cnf
-  tags: [ server5, server8 ]
 
 - name: Mysql Root accounts
-  mysql_user:
+  tags: [ server5, server8 ]
+  community.mysql.mysql_user:
     login_user: 'root'
     login_password: '{{ mysql_root_password }}'
     login_unix_socket: '{{ mysql_unix_socket }}'
@@ -122,4 +123,3 @@
     priv: '*.*:ALL,GRANT'
     state: present
   with_items: '{{ mysql_master_hosts }}'
-  tags: [ server5, server8 ]

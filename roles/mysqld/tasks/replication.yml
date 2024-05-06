@@ -1,8 +1,10 @@
 ---
 - name: MySQL DB Setup
+  tags: [ server5, server8 ]
+  when: inventory_hostname in groups['master']
   block:
   - name: Create MySQL Replication User
-    mysql_user:
+    community.mysql.mysql_user:
       login_user: 'root'
       login_password: '{{ mysql_root_password }}'
       login_unix_socket: '{{ mysql_unix_socket }}'
@@ -12,57 +14,55 @@
       priv: '*.*:REPLICATION SLAVE'
       state: present
   - name: Remove any anonymous user accounts
-    mysql_user:
+    community.mysql.mysql_user:
       login_user: 'root'
       login_password: '{{ mysql_root_password }}'
       login_unix_socket: '{{ mysql_unix_socket }}'
       name: ""
       host_all: yes
       state: absent
-  tags: [ server5, server8 ]
-  when: inventory_hostname in groups['master']
 
 - name: MySQL Replication
-  block:
-  - name: Get Master Info
-    mysql_replication:
-      login_user: 'root'
-      login_password: '{{ mysql_root_password }}'
-      login_host: '{{ mysql_master_hostname }}'
-      login_port: '{{ mysql_port }}'
-      mode: getmaster
-    register: master_status
-  - name: Show Master Status
-    debug: 
-      var: 'master_status'
-  - name: Get Slave Info
-    mysql_replication:
-      login_user: 'root'
-      login_password: '{{ mysql_root_password }}'
-      login_unix_socket: '{{ mysql_unix_socket }}'
-      mode: getslave
-    register: slave_status
-  - name: Show Slave Status
-    debug: 
-      var: 'slave_status'
-  - name: Configure Slave
-    mysql_replication:
-      login_user: 'root'
-      login_password: '{{ mysql_root_password }}'
-      login_unix_socket: '{{ mysql_unix_socket }}'
-      mode: changemaster
-      master_user: '{{ mysql_repl_user }}'
-      master_password: '{{ mysql_repl_password }}'
-      master_host: '{{ mysql_master_hostname }}'
-      master_log_file: '{{ master_status.File }}'
-      master_log_pos: '{{ master_status.Position }}'
-    when: not slave_status.Is_Slave
-  - name: Start mysql_replication
-    mysql_replication:
-      login_user: 'root'
-      login_password: '{{ mysql_root_password }}'
-      login_unix_socket: '{{ mysql_unix_socket }}'
-      mode: startslave
-    when: not slave_status.Is_Slave
   tags: [ server5, server8 ]
   when: inventory_hostname in groups['slave']
+  block:
+    - name: Get Primary Info
+      community.mysql.mysql_replication:
+        login_user: 'root'
+        login_password: '{{ mysql_root_password }}'
+        login_host: '{{ mysql_master_hostname }}'
+        login_port: '{{ mysql_port }}'
+        mode: getprimary
+      register: primary_status
+    - name: Show Primary Status
+      ansible.builtin.debug: 
+        var: 'primary_status'
+    - name: Get Replica Info
+      community.mysql.mysql_replication:
+        login_user: 'root'
+        login_password: '{{ mysql_root_password }}'
+        login_unix_socket: '{{ mysql_unix_socket }}'
+        mode: getreplica
+      register: replica_status
+    - name: Show Replica Status
+      ansible.builtin.debug: 
+        var: 'replica_status'
+    - name: Configure Replica
+      community.mysql.mysql_replication:
+        login_user: 'root'
+        login_password: '{{ mysql_root_password }}'
+        login_unix_socket: '{{ mysql_unix_socket }}'
+        mode: changeprimary
+        master_user: '{{ mysql_repl_user }}'
+        master_password: '{{ mysql_repl_password }}'
+        master_host: '{{ mysql_master_hostname }}'
+        master_log_file: '{{ primary_status.File }}'
+        master_log_pos: '{{ primary_status.Position }}'
+      when: not replica_status.Is_Replica
+    - name: Start mysql_replication
+      community.mysql.mysql_replication:
+        login_user: 'root'
+        login_password: '{{ mysql_root_password }}'
+        login_unix_socket: '{{ mysql_unix_socket }}'
+        mode: startreplica
+      when: not replica_status.Is_Replica

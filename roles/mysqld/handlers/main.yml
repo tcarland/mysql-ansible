@@ -1,5 +1,5 @@
 ---
-- name: restart_apparmor
+- name: Restart_apparmor
   become: true
   service:
     name: 'apparmor'

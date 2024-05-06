@@ -4,7 +4,6 @@
 # The level of variables is pretty annoying and difficult
 # to follow, but it does serve the purpose of being able 
 # to tweak many aspects of repo updates or changes.
-
 mysql_unix_socket: '/var/run/mysqld/mysqld.sock'
 mysql_bind_address: '0.0.0.0'
 
