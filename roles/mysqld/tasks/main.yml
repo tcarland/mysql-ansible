@@ -1,8 +1,11 @@
 ---
-- include: install-rhel.yml
+- name: Install MySQLd for RHEL
+  ansible.builtin.include_tasks: install-rhel.yml
   when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
 
-- include: install-ubuntu.yml
+- name: Install MySQLd for Ubuntu/Debian
+  ansible.builtin.include_tasks: install-ubuntu.yml
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
 
-- include: replication.yml
+- name: Configure replication
+  ansible.builtin.include_tasks: replication.yml

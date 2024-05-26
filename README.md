@@ -2,10 +2,10 @@ mysql-ansible
 =============
 
 Ansible playbook for installing MySQL Community Edition on a pair of
-hosts in a master-slave replication configuration.
+hosts in a primary-replica configuration.
 
 The *prereqs* role installs the yum packages and configuration, followed
-by the *mysqld* role which configures accounts and master-slave replication.
+by the *mysqld* role which configures accounts and replication.
 
 ## Inventory Configuration
 

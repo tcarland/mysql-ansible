@@ -1,88 +1,89 @@
 ---
 - name: Existing mysql datadir
   become: true
-  stat:
+  tags: [ server5, server8 ]
+  ansible.builtin.stat:
     path: '{{ mysql_data_dir }}/mysql'
   register: mystat
-  tags: [ server5, server8 ]
 
 - name: mysql datadir stat
-  debug: 
-    var: mystat
   tags: [ server5, server8 ]
+  ansible.builtin.debug: 
+    var: mystat
 
 - name: Create tmp directory
-  file:
+  tags: [ client5, client8 ]
+  ansible.builtin.file:
     path: '{{ mysql_tmp_dir }}'
     state: directory
-    mode: 0755
-  tags: [ client5, client8 ]
+    mode: '0755'
 
 - name: Ensure /usr/share/java exists
   become: true
-  file:
+  tags: [ client5, client8 ]
+  ansible.builtin.file:
     path: '{{ mysql_connector_path }}'
     state: directory
-    mode: 0755
-  tags: [ client5, client8 ]
+    mode: '0755'
 
-
-- include: install-rhel.yml
+- name: Install MySQL for RHEL
+  ansible.builtin.include_tasks: install-rhel.yml
   when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
 
-- include: install-ubuntu.yml
+- name: Install MySQL for Ubuntu/Debian
+  ansible.builtin.include_tasks: install-ubuntu.yml
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
 
-
 - name: Install Java Connector for Mysql 5.7
-  block:
-  - name: Acquire the Java Connector
-    get_url:
-      url: '{{ mysql5_java_connector_url }}'
-      dest: '{{ mysql_tmp_dir }}/{{ mysql5_java_connector_tarball }}'
-      checksum: md5:6419f5a73c76991d73e27a93babca263
-  - name: Extract Java Connector
-    unarchive:
-      src: '{{ mysql_tmp_dir }}/{{ mysql5_java_connector_tarball }}'
-      dest: '{{ mysql_tmp_dir }}'
-      remote_src: 'yes'
-      creates: '{{ mysql_tmp_dir }}/{{ mysql5_java_connector_name }}'
-  - name: Copy Connector J
-    shell: 'cp {{ mysql5_java_connector_srcpath }}/{{ mysql5_java_connector_jarfile }} {{ mysql_connector_path }}/'
-  - name: Link Mysql Connector jar
-    file:
-      src: '{{ mysql_connector_path }}/{{ mysql5_java_connector_jarfile }}'
-      dest: '{{ mysql_connector_path }}/{{ mysql_java_connector }}.jar'
-      state: link
   become: true
   tags: [ client5 ]
+  block:
+    - name: Acquire the Java Connector
+      ansible.builtin.get_url:
+        url: '{{ mysql5_java_connector_url }}'
+        dest: '{{ mysql_tmp_dir }}/{{ mysql5_java_connector_tarball }}'
+        checksum: md5:6419f5a73c76991d73e27a93babca263
+        mode: '0644'
+    - name: Extract Java Connector
+      ansible.builtin.unarchive:
+        src: '{{ mysql_tmp_dir }}/{{ mysql5_java_connector_tarball }}'
+        dest: '{{ mysql_tmp_dir }}'
+        remote_src: 'yes'
+        creates: '{{ mysql_tmp_dir }}/{{ mysql5_java_connector_name }}'
+    - name: Copy Connector J
+      ansible.builtin.shell: 'cp {{ mysql5_java_connector_srcpath }}/{{ mysql5_java_connector_jarfile }} {{ mysql_connector_path }}/'
+    - name: Link Mysql Connector jar
+      ansible.builtin.file:
+        src: '{{ mysql_connector_path }}/{{ mysql5_java_connector_jarfile }}'
+        dest: '{{ mysql_connector_path }}/{{ mysql_java_connector }}.jar'
+        state: link
 
 - name: Install Java Connector for Mysql 8.0
-  block:
-  - name: Acquire the Java Connector
-    get_url:
-      url: '{{ mysql8_java_connector_url }}'
-      dest: '{{ mysql_tmp_dir }}/{{ mysql8_java_connector_tarball }}'
-      checksum: md5:0856fa2e627c7ee78019cd0980d04614
-  - name: Extract Java Connector
-    unarchive:
-      src: '{{ mysql_tmp_dir }}/{{ mysql8_java_connector_tarball }}'
-      dest: '{{ mysql_tmp_dir }}'
-      remote_src: 'yes'
-      creates: '{{ mysql_tmp_dir }}/{{ mysql8_java_connector_name }}'
-  - name: Copy Connector J
-    shell: 'cp {{ mysql8_java_connector_srcpath }}/{{ mysql8_java_connector_jarfile }} {{ mysql_connector_path }}/'
-  - name: Link Mysql Connector jar
-    file:
-      src: '{{ mysql_connector_path }}/{{ mysql8_java_connector_jarfile }}'
-      dest: '{{ mysql_connector_path }}/{{ mysql_java_connector }}.jar'
-      state: link
   become: true
   tags: [ client8 ]
+  block:
+    - name: Acquire the Java Connector
+      ansible.builtin.get_url:
+        url: '{{ mysql8_java_connector_url }}'
+        dest: '{{ mysql_tmp_dir }}/{{ mysql8_java_connector_tarball }}'
+        checksum: md5:0856fa2e627c7ee78019cd0980d04614
+    - name: Extract Java Connector
+      ansible.builtin.unarchive:
+        src: '{{ mysql_tmp_dir }}/{{ mysql8_java_connector_tarball }}'
+        dest: '{{ mysql_tmp_dir }}'
+        remote_src: true
+        creates: '{{ mysql_tmp_dir }}/{{ mysql8_java_connector_name }}'
+    - name: Copy Connector J
+      ansible.builtin.shell: 'cp {{ mysql8_java_connector_srcpath }}/{{ mysql8_java_connector_jarfile }} {{ mysql_connector_path }}/'
+    - name: Link Mysql Connector jar
+      ansible.builtin.file:
+        src: '{{ mysql_connector_path }}/{{ mysql8_java_connector_jarfile }}'
+        dest: '{{ mysql_connector_path }}/{{ mysql_java_connector }}.jar'
+        state: link
 
 - name: Cleanup state
   become: true
-  file:
+  tags: [ client5, client8 ]
+  ansible.builtin.file:
     path: '{{ mysql_tmp_dir }}'
     state: absent
-  tags: [ client5, client8 ]

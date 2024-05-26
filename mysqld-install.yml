@@ -1,12 +1,12 @@
 ---
 - name: Install MySQL
   hosts: mysqld
-  gather_facts: True
+  gather_facts: true
   roles:
     - 'mysqld'
 
 - name: Configure clients
   hosts: clients
-  gather_facts: True
+  gather_facts: true
   roles:
      - 'common'
